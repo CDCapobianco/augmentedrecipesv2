@@ -1,0 +1,24 @@
+description: Ultralytics best model trained on datasets/DIMA_dataset/data.yaml
+author: Ultralytics
+license: AGPL-3.0 https://ultralytics.com/license
+date: '2024-03-25T12:42:44.008341'
+version: 8.0.215
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 320
+- 320
+names:
+  0: 'carrot'
+  1: 'potato'
+  2: 'pork belly'
+  3: 'chicken thighs'
+  4: 'chicken breast'
+  5: 'broccoli'
+  6: 'tomato'
+  7: 'egg'
+  8: 'asparagus'
+  9: 'rice'
+  10: 'salmon'
+  11: 'pumpkin'
