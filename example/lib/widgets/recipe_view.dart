@@ -21,9 +21,11 @@ class RecipeDetailsPage extends StatelessWidget {
           children: [
             _buildRecipeImage(recipe['image']),
             SizedBox(height: 16),
-            _buildNutrientsSection(recipe['totalNutrients']), // Sezione per i nutrienti
+            _buildNutrientsSection(recipe['totalNutrients'], recipe['totalWeight']), // Sezione per i nutrienti
             SizedBox(height: 16),
-            _buildRecipeInfo('CO2 Emissions', '${recipe['totalCO2Emissions'].round()} g'), // Arrotondiamo e aggiungiamo la stringa "g" per le emissioni di CO2
+            checkHealtyness(recipe['totalNutrients'], recipe['totalWeight']), // Arrotondiamo e aggiungiamo la stringa "g" per le emissioni di CO2
+            SizedBox(height: 16),
+            _buildRecipeInfo('CO2 Emissions', '${(recipe['totalCO2Emissions']*100/recipe['totalWeight']).round()} g'), // Arrotondiamo e aggiungiamo la stringa "g" per le emissioni di CO2
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
@@ -55,50 +57,84 @@ class RecipeDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecipeInfo(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
+Widget _buildRecipeInfo(String label, String value) {
+  bool isHighValue = int.parse(value.split(' ')[0]) > 500;
+  IconData iconData = isHighValue ? Icons.sentiment_dissatisfied : Icons.sentiment_satisfied;
+  Color iconColor = isHighValue ? Colors.red : Colors.green;
+  Color textColor = isHighValue ? Colors.red : Colors.green;
 
- Widget _buildNutrientsSection(Map<String, dynamic> nutrients) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            PopupMenuButton(
+              icon: Icon(Icons.help_outline, size: 15), // Icona del punto di domanda
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Text('Cooking with care,\nreducing our carbon fare'), // Testo del menu
+                  onTap: () {
+                    // Aggiungi qui la logica per mostrare il box con scritto "Ciao"
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(
+              iconData,
+              color: iconColor,
+              size: 20,
+            ),
+            SizedBox(width: 4),
+            Text(
+              value,
+              style: TextStyle(fontSize: 16, color: textColor),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
+
+
+
+ Widget _buildNutrientsSection(Map<String, dynamic> nutrients, double totalWeigth) {
   return ExpansionTile(
     title: const Text(
-      'Nutrienti',
+      'Nutrients per 100 g',
       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     ),
     children: [
-      _buildNutrientItem(nutrients['ENERC_KCAL']['label'], nutrients['ENERC_KCAL']['quantity'], nutrients['ENERC_KCAL']['unit']),
-      _buildNutrientItem(nutrients['PROCNT']['label'], nutrients['PROCNT']['quantity'], nutrients['PROCNT']['unit']),
-      _buildNutrientItem(nutrients['FAT']['label'], nutrients['FAT']['quantity'], nutrients['FAT']['unit']),
-      _buildNutrientItem(nutrients['CHOCDF']['label'], nutrients['CHOCDF']['quantity'], nutrients['CHOCDF']['unit']),
-      _buildNutrientItem('          Whose sugars', nutrients['SUGAR']['quantity'], nutrients['SUGAR']['unit']),
+      _buildNutrientItem(nutrients['ENERC_KCAL']['label'], nutrients['ENERC_KCAL']['quantity']*100/totalWeigth, nutrients['ENERC_KCAL']['unit']),
+      _buildNutrientItem(nutrients['PROCNT']['label'], nutrients['PROCNT']['quantity']*100/totalWeigth, nutrients['PROCNT']['unit']),
+      _buildNutrientItem(nutrients['FAT']['label'], nutrients['FAT']['quantity']*100/totalWeigth, nutrients['FAT']['unit']),
+      _buildNutrientItem(nutrients['CHOCDF']['label'], nutrients['CHOCDF']['quantity']*100/totalWeigth, nutrients['CHOCDF']['unit']),
+      _buildNutrientItem('          Whose sugars', nutrients['SUGAR']['quantity']*100/totalWeigth, nutrients['SUGAR']['unit']),
       ExpansionTile(
         title: const Text(
           'Vitamine',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         children: [
-          if (nutrients['VITA_RAE']['quantity'] != 0) _buildNutrientItem(nutrients['VITA_RAE']['label'], nutrients['VITA_RAE']['quantity'], nutrients['VITA_RAE']['unit']),
-          if (nutrients['VITC']['quantity'] != 0) _buildNutrientItem(nutrients['VITC']['label'], nutrients['VITC']['quantity'], nutrients['VITC']['unit']),
-          if (nutrients['THIA']['quantity'] != 0) _buildNutrientItem(nutrients['THIA']['label'], nutrients['THIA']['quantity'], nutrients['THIA']['unit']),
-          if (nutrients['RIBF']['quantity'] != 0) _buildNutrientItem(nutrients['RIBF']['label'], nutrients['RIBF']['quantity'], nutrients['RIBF']['unit']),
-          if (nutrients['NIA']['quantity'] != 0) _buildNutrientItem(nutrients['NIA']['label'], nutrients['NIA']['quantity'], nutrients['NIA']['unit']),
-          if (nutrients['VITB6A']['quantity'] != 0) _buildNutrientItem(nutrients['VITB6A']['label'], nutrients['VITB6A']['quantity'], nutrients['VITB6A']['unit']),
+          if (nutrients['VITA_RAE']['quantity'] != 0) _buildNutrientItem(nutrients['VITA_RAE']['label'], nutrients['VITA_RAE']['quantity']*100/totalWeigth, nutrients['VITA_RAE']['unit']),
+          if (nutrients['VITC']['quantity'] != 0) _buildNutrientItem(nutrients['VITC']['label'], nutrients['VITC']['quantity']*100/totalWeigth, nutrients['VITC']['unit']),
+          if (nutrients['THIA']['quantity'] != 0) _buildNutrientItem(nutrients['THIA']['label'], nutrients['THIA']['quantity']*100/totalWeigth, nutrients['THIA']['unit']),
+          if (nutrients['RIBF']['quantity'] != 0) _buildNutrientItem(nutrients['RIBF']['label'], nutrients['RIBF']['quantity']*100/totalWeigth, nutrients['RIBF']['unit']),
+          if (nutrients['NIA']['quantity'] != 0) _buildNutrientItem(nutrients['NIA']['label'], nutrients['NIA']['quantity']*100/totalWeigth, nutrients['NIA']['unit']),
+          if (nutrients['VITB6A']['quantity'] != 0) _buildNutrientItem(nutrients['VITB6A']['label'], nutrients['VITB6A']['quantity']*100/totalWeigth, nutrients['VITB6A']['unit']),
       
         ],
       ),
@@ -107,7 +143,58 @@ class RecipeDetailsPage extends StatelessWidget {
 }
 
 
+ Widget checkHealtyness(Map<String, dynamic> nutrients, double totalWeigth){
+  double carbo = nutrients['CHOCDF']['quantity']*100/totalWeigth;
+  double protein = nutrients['PROCNT']['quantity']*100/totalWeigth;
+  double sugar = nutrients['SUGAR']['quantity']*100/totalWeigth;
+  //double kcal = nutrients['ENERC_KCAL']['quantity']*100/totalWeigth;
+  double fat = nutrients['FAT']['quantity']*100/totalWeigth;
+  totalWeigth = 100;
+  double calorieProteine = protein * 4;
+  double calorieCarboidrati = carbo * 4;
+  double calorieGrassi = fat * 9;
+  double calorieTotali = calorieProteine + calorieCarboidrati + calorieGrassi;
+  double percProt = (calorieProteine / calorieTotali) * 100;
+  double percCarb = (calorieCarboidrati / calorieTotali) * 100;
+  double percFat = (calorieGrassi / calorieTotali) * 100;
 
+  // Calcola la percentuale di zuccheri rispetto al peso totale
+  double percSug = (sugar / totalWeigth) * 100;
+  double score = 0;
+  bool p=false, c=false, f=false, s= false, v = false;
+  if(percProt >= 20)
+  {
+    score = score + 20;
+    p=true;
+  }
+  if(percCarb >= 45)
+  {
+    score = score + 20;
+    c=true;
+  }
+  if(percFat <= 35){
+    score = score + 20;
+    f=true;
+  }
+  if(percSug <= 10){
+    score = score + 20;
+    s=true;
+  }
+  if(nutrients['VITA_RAE']['quantity'] != 0 && nutrients['VITC']['quantity'] != 0 && nutrients['THIA']['quantity'] != 0 && nutrients['NIA']['quantity'] != 0 && nutrients['VITB6A']['quantity'] != 0){
+    score = score + 20;
+    v=true;
+  }
+  
+  return HealthBar(
+  score: score,
+  proteinGood: p,
+  carbGood: c,
+  fatGood: f,
+  sugarGood: s,
+  vitaminsGood: v,
+);
+  
+ }
 
 
   Widget _buildNutrientItem(String label, double quantity, String unit) {
@@ -130,13 +217,106 @@ class RecipeDetailsPage extends StatelessWidget {
 }
 
 
-  void _launchURL(String url) async {
-    Uri uri = Uri.parse(url);
-    await launchUrl(uri);
-    /*if (await canLaunchUrl(uri)) {
-      
-    } else {
-      throw 'Could not launch $url';
-    }*/
+void _launchURL(String url) async {
+  Uri uri = Uri.parse(url);
+  await launchUrl(uri);
+  /*if (await canLaunchUrl(uri)) {
+    
+  } else {
+    throw 'Could not launch $url';
+  }*/
+}
+}
+class HealthBar extends StatelessWidget {
+  final double score;
+  final bool proteinGood;
+  final bool carbGood;
+  final bool fatGood;
+  final bool sugarGood;
+  final bool vitaminsGood;
+
+  HealthBar({
+    required this.score,
+    required this.proteinGood,
+    required this.carbGood,
+    required this.fatGood,
+    required this.sugarGood,
+    required this.vitaminsGood,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Healthyness Score',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 8),
+        SizedBox(
+          height: 24, // Imposta l'altezza desiderata per la barra
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              LinearProgressIndicator(
+                value: score / 100,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                minHeight: 24, // Imposta l'altezza della barra
+              ),
+              Text(
+                '${score.toStringAsFixed(0)}%', // Visualizza la percentuale dello score
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (proteinGood) _buildNutrientCheck('Proteine', true),
+            if (carbGood) _buildNutrientCheck('Carboidrati', true),
+            if (fatGood) _buildNutrientCheck('Grassi', true),
+            if (sugarGood) _buildNutrientCheck('Zuccheri', true),
+            if (vitaminsGood) _buildNutrientCheck('Vitamine', true),
+            if (!proteinGood) _buildNutrientCheck('Proteine', false),
+            if (!carbGood) _buildNutrientCheck('Carboidrati', false),
+            if (!fatGood) _buildNutrientCheck('Grassi', false),
+            if (!sugarGood) _buildNutrientCheck('Zuccheri', false),
+            if (!vitaminsGood) _buildNutrientCheck('Vitamine', false),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNutrientCheck(String nutrient, bool isGood) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(
+            isGood ? Icons.check_circle : Icons.error,
+            color: isGood ? Colors.green : Colors.red,
+          ),
+          SizedBox(height: 4),
+          Text(
+            nutrient,
+            style: TextStyle(
+              color: isGood ? Colors.green : Colors.red,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
+
