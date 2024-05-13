@@ -37,16 +37,16 @@ class DetectView extends ConsumerWidget {
                 stream: objectDetector.detectionResultStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                      double confidenceThreshold = 0.6;
-                      
-                      List<DetectedObject?> recipeList =  snapshot.data!.where((object) => object!.confidence > confidenceThreshold).toList();
-
+                    
+                    snapshot.data!.where((object) => object!.confidence > 0.5).toList();
+                  
+                      List<DetectedObject> list =  snapshot.data! as List<DetectedObject>;
                       String listOfLabels = "";
-                      for (int i = 0; i < recipeList.length; i++) {
+                      for (int i = 0; i < list.length; i++) {
                         if(i == 0) {
-                          listOfLabels = recipeList[i]!.label;
+                          listOfLabels = list[i].label;
                         } else {
-                          listOfLabels = "$listOfLabels+${recipeList[i]?.label}";
+                          listOfLabels = "$listOfLabels+${list[i].label}";
                         } 
                       }
                       List<String> parts = listOfLabels.split('+');
@@ -65,8 +65,8 @@ class DetectView extends ConsumerWidget {
                       GlobalVariables.lista = outputString;
                       return CustomPaint(
                         painter: ObjectDetectorPainter(
-                         recipeList as List<DetectedObject>,
-                          const [Colors.white],
+                          snapshot.data! as List<DetectedObject>,
+                          const [Colors.lightBlueAccent],
                           4,
                         ),
                       );
