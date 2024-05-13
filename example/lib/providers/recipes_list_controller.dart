@@ -65,7 +65,7 @@ class ListRecipes {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 8),
-            _buildRecipeDetail('place', checkHealtyness(recipe['totalNutrients'], recipe['totalWeight'])),
+            //_buildRecipeDetail('Ingredients', recipe['ingredientLines'].join(", ")),
             //_buildRecipeDetail('Calories', '${recipe['calories']}'),
             //_buildRecipeDetail('Dish Type', '${recipe['dishType']}'),
           ],
@@ -102,34 +102,4 @@ class ListRecipes {
       ),
     );
   }
-  
-  static String checkHealtyness(Map<String, dynamic> nutrients, double totalWeigth){
-  double carbo = nutrients['CHOCDF']['quantity']*100/totalWeigth;
-  double protein = nutrients['PROCNT']['quantity']*100/totalWeigth;
-  double sugar = nutrients['SUGAR']['quantity']*100/totalWeigth;
-  //double kcal = nutrients['ENERC_KCAL']['quantity']*100/totalWeigth;
-  double fat = nutrients['FAT']['quantity']*100/totalWeigth;
-  totalWeigth = 100;
-  double calorieProteine = protein * 4;
-  double calorieCarboidrati = carbo * 4;
-  double calorieGrassi = fat * 9;
-  double calorieTotali = calorieProteine + calorieCarboidrati + calorieGrassi;
-  double percentualeProteine = (calorieProteine / calorieTotali) * 100;
-  double percentualeCarboidrati = (calorieCarboidrati / calorieTotali) * 100;
-  double percentualeGrassi = (calorieGrassi / calorieTotali) * 100;
-
-  // Calcola la percentuale di zuccheri rispetto al peso totale
-  double percentualeZuccheri = (sugar / totalWeigth) * 100;
-
-  // Calcola uno score basato sui valori percentuali
-  if (percentualeProteine >= 20 && percentualeCarboidrati >= 45 && percentualeGrassi <= 35 && percentualeZuccheri <= 10) {
-    return "4"; // Molto salutare
-  } else if (percentualeProteine >= 15 && percentualeCarboidrati >= 40 && percentualeGrassi <= 40 && percentualeZuccheri <= 15) {
-    return "3"; // Piuttosto salutare
-  } else if (percentualeProteine >= 10 && percentualeCarboidrati >= 35 && percentualeGrassi <= 45 && percentualeZuccheri <= 20) {
-    return "2"; // Moderatamente salutare
-  } else {
-    return "1"; // Poco salutare
-  }
- }
 }
