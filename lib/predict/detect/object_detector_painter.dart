@@ -69,8 +69,7 @@ class ObjectDetectorPainter extends CustomPainter {
             background: Paint()..color = color.withOpacity(opacity),
           ),
         )
-        ..addText(' ${detectedObject.label} '
-            '${(detectedObject.confidence * 100).toStringAsFixed(1)}\n')
+        ..addText(' ${detectedObject.label} ')
         ..pop();
       canvas.drawParagraph(
         builder.build()..layout(ui.ParagraphConstraints(width: right - left)),
