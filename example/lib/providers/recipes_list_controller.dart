@@ -65,7 +65,7 @@ class ListRecipes {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 8),
-            //_buildRecipeDetail('Ingredients', recipe['ingredientLines'].join(", ")),
+            _buildRecipeDetail('place', checkHealtyness(recipe['totalNutrients'], recipe['totalWeight'])),
             //_buildRecipeDetail('Calories', '${recipe['calories']}'),
             //_buildRecipeDetail('Dish Type', '${recipe['dishType']}'),
           ],
@@ -102,4 +102,67 @@ class ListRecipes {
       ),
     );
   }
+  
+  static String checkHealtyness(Map<String, dynamic> nutrients, double totalWeigth){
+  double carbo = nutrients['CHOCDF']['quantity']*100/totalWeigth;
+  double protein = nutrients['PROCNT']['quantity']*100/totalWeigth;
+  double sugar = nutrients['SUGAR']['quantity']*100/totalWeigth;
+  //double kcal = nutrients['ENERC_KCAL']['quantity']*100/totalWeigth;
+  double fat = nutrients['FAT']['quantity']*100/totalWeigth;
+  totalWeigth = 100;
+  double calorieProteine = protein * 4;
+  double calorieCarboidrati = carbo * 4;
+  double calorieGrassi = fat * 9;
+  double calorieTotali = calorieProteine + calorieCarboidrati + calorieGrassi;
+  double percProt = (calorieProteine / calorieTotali) * 100;
+  double percCarb = (calorieCarboidrati / calorieTotali) * 100;
+  double percFat = (calorieGrassi / calorieTotali) * 100;
+
+  // Calcola la percentuale di zuccheri rispetto al peso totale
+  double percSug = (sugar / totalWeigth) * 100;
+  double score = 0;
+  bool p=false, c=false, f=false, s= false, v = false;
+  if(percProt >= 20)
+  {
+    score = score + 20;
+    p=true;
+  }
+  if(percCarb >= 45)
+  {
+    score = score + 20;
+    c=true;
+  }
+  if(percFat <= 35){
+    score = score + 20;
+    f=true;
+  }
+  if(percSug <= 10){
+    score = score + 20;
+    s=true;
+  }
+  if(nutrients['VITA_RAE']['quantity'] != 0 && nutrients['VITC']['quantity'] != 0 && nutrients['THIA']['quantity'] != 0 && nutrients['NIA']['quantity'] != 0 && nutrients['VITB6A']['quantity'] != 0){
+    score = score + 20;
+    v=true;
+  }
+  if(score == 0){
+    return "Bad";
+  }
+  if(score == 20){
+    return "Quite Bad";
+  }
+  if(score == 40){
+    return "Balanced";
+  }
+  if(score == 60){
+    return "Good";
+  }
+  if(score == 80){
+    return "Quite Good";
+  }
+  if(score == 100){
+    return "Excellent";
+  }
+  return "";
+  
+ }
 }
