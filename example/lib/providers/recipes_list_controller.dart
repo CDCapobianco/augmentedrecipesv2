@@ -9,7 +9,20 @@ class ListRecipes {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Recipes', style: TextStyle(color: Colors.black)),
+          title: Stack(
+  children: [
+    Text(
+      'Delightful Selections',
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+    ),
+    Positioned(
+      right: 0,
+      top: -4,
+      child: Icon(Icons.star, color: Colors.orange, size: 30),
+    ),
+  ],
+),
+
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,7 +46,13 @@ class ListRecipes {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Chiudi'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+              ),
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -65,9 +84,7 @@ class ListRecipes {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 8),
-            _buildRecipeDetail('place', checkHealtyness(recipe['totalNutrients'], recipe['totalWeight'])),
-            //_buildRecipeDetail('Calories', '${recipe['calories']}'),
-            //_buildRecipeDetail('Dish Type', '${recipe['dishType']}'),
+            _buildRecipeDetail('Health Score', checkHealtiness(recipe['totalNutrients'], recipe['totalWeight'])),
           ],
         ),
       ),
@@ -75,11 +92,37 @@ class ListRecipes {
   }
 
   static Widget _buildRecipeDetail(String label, String value) {
+    // Aggiunta di icone emoji per migliorare l'aspetto del punteggio di salute
+    Widget emojiIcon;
+    if (value == 'Bad') {
+      emojiIcon = Text('Bad 😞', style: TextStyle(fontSize: 20));
+    } else if (value == 'Quite Bad') {
+      emojiIcon = Text('Quite Bad 😕', style: TextStyle(fontSize: 20));
+    } else if (value == 'Balanced') {
+      emojiIcon = Text('Balanced 😐', style: TextStyle(fontSize: 20));
+    } else if (value == 'Good') {
+      emojiIcon = Text('Good 😊', style: TextStyle(fontSize: 20));
+    } else if (value == 'Quite Good') {
+      emojiIcon = Text('Quite Good 😄', style: TextStyle(fontSize: 20));
+    } else if (value == 'Excellent') {
+      emojiIcon = Text('Excellent 😃', style: TextStyle(fontSize: 20));
+    } else {
+      emojiIcon = Text('');
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        '$label: $value',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          ),
+          SizedBox(width: 10),
+          emojiIcon, // Emoji icon per l'health score
+        ],
       ),
     );
   }
@@ -102,8 +145,7 @@ class ListRecipes {
       ),
     );
   }
-  
-  static String checkHealtyness(Map<String, dynamic> nutrients, double totalWeigth){
+  static String checkHealtiness(Map<String, dynamic> nutrients, double totalWeigth){
   double carbo = nutrients['CHOCDF']['quantity']*100/totalWeigth;
   double protein = nutrients['PROCNT']['quantity']*100/totalWeigth;
   double sugar = nutrients['SUGAR']['quantity']*100/totalWeigth;
