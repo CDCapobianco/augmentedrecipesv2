@@ -46,7 +46,7 @@ class WelcomePage extends StatelessWidget {
           Center(
             child: Container(
               height: 200, // Adjust the height as needed
-              child: TypeWriterText(
+              child: const TypeWriterText(
                 text: Text(
                   'What\'s for dinner tonight?',
                   style: TextStyle(

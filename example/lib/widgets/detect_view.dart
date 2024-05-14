@@ -25,13 +25,6 @@ class DetectView extends ConsumerWidget {
                 controller: _cameraController,
                 onCameraCreated: () {},
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: TimeAndFps(
-                  inferenceTimeStream: objectDetector.inferenceTime,
-                  fpsRateStream: objectDetector.fpsRate,
-                ),
-              ),
               // StreamBuilder to access content of detectionResultStream
               StreamBuilder<List<DetectedObject?>?>(
                 stream: objectDetector.detectionResultStream,
@@ -67,7 +60,7 @@ class DetectView extends ConsumerWidget {
                         painter: ObjectDetectorPainter(
                          recipeList as List<DetectedObject>,
                           const [Colors.white],
-                          4,
+                          20,
                         ),
                       );
                   }

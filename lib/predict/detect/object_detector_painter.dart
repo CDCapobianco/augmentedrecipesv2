@@ -20,9 +20,6 @@ class ObjectDetectorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final borderPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _strokeWidth;
     final colors = _colors ?? Colors.primaries;
 
     for (final detectedObject in _detectionResults) {
@@ -42,38 +39,54 @@ class ObjectDetectorPainter extends CustomPainter {
 
       final opacity = (detectedObject.confidence - 0.2) / (1.0 - 0.2) * 0.9;
 
-      //
-      // DRAW
-      // Rect
-      final index = detectedObject.index % colors.length;
-      final color = colors[index];
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(left, top, width, height),
-          const Radius.circular(8),
-        ),
-        borderPaint..color = color.withOpacity(opacity),
+      // Calculate center coordinates of the bounding box
+      final centerX = left + width / 2;
+      final centerY = top + height / 2;
+
+      // Draw circular frame with white border and image
+      final imageSize = min(width, height) * 0.8; // Adjust the size of the image frame as needed
+      final imageX = centerX - imageSize / 2;
+      final imageY = centerY - imageSize / 2;
+
+      final imageBorderRadius = imageSize / 4;
+      final imageBorderPaint = Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0; // Adjust the width of the border as needed
+
+      canvas.drawCircle(
+        Offset(centerX, centerY),
+        imageBorderRadius,
+        imageBorderPaint,
       );
 
       // Label
-      final builder = ui.ParagraphBuilder(
+      final label = detectedObject.label;
+      final capitalizedLabel = label.substring(0, 1).toUpperCase() + label.substring(1); // Capitalize first letter
+      final labelBuilder = ui.ParagraphBuilder(
         ui.ParagraphStyle(
-          textAlign: TextAlign.left,
-          fontSize: 16,
+          textAlign: TextAlign.center,
+          fontSize: 24, // Increase font size
+          fontWeight: FontWeight.bold, // Set to bold
           textDirection: TextDirection.ltr,
         ),
       )
         ..pushStyle(
           ui.TextStyle(
             color: Colors.white,
-            background: Paint()..color = color.withOpacity(opacity),
+            background: Paint()..color = colors[detectedObject.index % colors.length].withOpacity(0), 
           ),
         )
-        ..addText(' ${detectedObject.label} ')
-        ..pop();
+        ..addText(capitalizedLabel);
+      final labelParagraph = labelBuilder.build()..layout(ui.ParagraphConstraints(width: width));
+
+      // Adjust vertical position of the label
+      final labelX = left;
+      final labelY = max(0, centerY + imageSize / 2); // Adjust as needed
+
       canvas.drawParagraph(
-        builder.build()..layout(ui.ParagraphConstraints(width: right - left)),
-        Offset(max(0, left), max(0, top)),
+        labelParagraph,
+        Offset(left, labelY.toDouble()),
       );
     }
   }

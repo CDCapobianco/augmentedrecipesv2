@@ -16,40 +16,47 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   final _cameraController = UltralyticsYoloCameraController();
-  
+
   @override
   Widget build(BuildContext context) {
     final hasPermissionsValue = ref.watch(permissionsControllerProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: hasPermissionsValue.when(
-          data: (hasPermissions) => switch (hasPermissions) {
-            true => Stack(
-                alignment: Alignment.center,
-                children: [
-                  DetectView(_cameraController), //detectmodel blabla
-                  ElevatedButton(
-                                onPressed: () {
-                                   ApiManager.makeApiRequest(context, GlobalVariables.lista);
-                                },
-                                child: const Text('OTTIENI DATI'),
-                              ),
-                ],
-                
+          data: (hasPermissions) => Stack(
+            alignment: Alignment.center,
+            children: [
+              DetectView(_cameraController),
+              Positioned(
+                bottom: 20.0, // Adjust as needed
+                child: GestureDetector(
+                  onTap: () {
+                    ApiManager.makeApiRequest(context, GlobalVariables.lista);
+                  },
+                  child: Container(
+                    width: 60.0,
+                    height: 60.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.camera_alt, // Icon for capturing a picture
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            false => const Center(child: Text('No permissions')),
-          },
-          error: (error, stackTrace) => const Text('No permissions'),
+            ],
+          ),
+          error: (error, stackTrace) => const Center(child: Text('No permissions')),
           loading: () => const Center(child: CircularProgressIndicator()),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _cameraController.toggleLensDirection();
-          },
-        
-          child: const Icon(Icons.cameraswitch_rounded),
-        ),
+
       ),
     );
   }
