@@ -5,6 +5,7 @@ import 'package:ultralytics_yolo_example/providers/api_controller.dart';
 import 'package:ultralytics_yolo_example/providers/permissions_controller.dart';
 import 'package:ultralytics_yolo_example/providers/query_provider.dart';
 import 'package:ultralytics_yolo_example/widgets/detect_view.dart';
+import 'package:ultralytics_yolo_example/widgets/landing_page.dart';
 
 
 class MyApp extends ConsumerStatefulWidget {
@@ -24,6 +25,15 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('Go Back'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              MaterialPageRoute(builder: (context) => const LandingPage());
+            },
+          ),
+        ),
         body: hasPermissionsValue.when(
           data: (hasPermissions) => Stack(
             alignment: Alignment.center,

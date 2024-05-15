@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ultralytics_yolo_example/providers/query_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RecipeDetailsPage extends StatelessWidget {
@@ -8,8 +9,8 @@ class RecipeDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recipe = recipeData['recipe'];
-
+    final recipe = recipeData['recipe'];  
+    GlobalVariables.pickedList.add(recipeData);
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe['label']),
