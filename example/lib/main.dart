@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo_example/app.dart';
 import 'package:typewritertext/typewritertext.dart';
-import 'package:ultralytics_yolo_example/widgets/landing_page.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -71,7 +70,7 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LandingPage()),
+                    MaterialPageRoute(builder: (context) => MyApp()),
                   );
                 },
                 icon: const Icon(Icons.arrow_forward),

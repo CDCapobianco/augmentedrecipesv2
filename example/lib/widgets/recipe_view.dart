@@ -9,8 +9,7 @@ class RecipeDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recipe = recipeData['recipe'];  
-    GlobalVariables.pickedList.add(recipeData);
+    final recipe = recipeData['recipe'];
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe['label']),
@@ -19,7 +18,7 @@ class RecipeDetailsPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-          image: AssetImage('assets/backgroundImageRecipeView.jpg'), // Sostituisci 'assets/background_image.jpg' con il percorso dell'immagine di sfondo desiderata
+          image: AssetImage('assets/backgroundImageRecipeView.jpg'),
           fit: BoxFit.cover,
           ),
         ),
