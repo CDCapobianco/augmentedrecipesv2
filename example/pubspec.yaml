@@ -31,6 +31,7 @@ dependencies:
   http: ^1.2.1
   typewritertext: ^3.0.3
   video_player: ^2.7.0
+  google_fonts: ^6.0.0
 
 dev_dependencies:
   build_runner: ^2.4.6  
@@ -44,3 +45,4 @@ flutter:
   assets:
     - assets/
     - assets/food_clips/
+    - assets/label_images/

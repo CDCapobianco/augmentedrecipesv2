@@ -2,10 +2,12 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 
 /// A painter used to draw the detected objects on the screen.
 
+/// A painter used to draw the detected objects on the screen.
 class ObjectDetectorPainter extends CustomPainter {
   /// Creates a [ObjectDetectorPainter].
   ObjectDetectorPainter(
@@ -44,15 +46,20 @@ class ObjectDetectorPainter extends CustomPainter {
       final centerY = top + height / 2;
 
       // Draw circular frame with white border and image
-      final imageSize = min(width, height) * 0.8; // Adjust the size of the image frame as needed
+      final imageSize = min(width, height) * 0.5; // Adjust the size of the image frame as needed
       final imageX = centerX - imageSize / 2;
       final imageY = centerY - imageSize / 2;
 
-      final imageBorderRadius = imageSize / 4;
+      final imageBorderRadius = imageSize / 2;
       final imageBorderPaint = Paint()
         ..color = Colors.white
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.0; // Adjust the width of the border as needed
+
+      final label = detectedObject.label;
+      final imagePath = 'assets/label_images/$label.jpg';
+
+      final imageProvider = AssetImage(imagePath);
 
       canvas.drawCircle(
         Offset(centerX, centerY),
@@ -60,23 +67,48 @@ class ObjectDetectorPainter extends CustomPainter {
         imageBorderPaint,
       );
 
+      canvas.save();
+      canvas.clipPath(Path()
+        ..addOval(Rect.fromCircle(center: Offset(centerX, centerY), radius: imageBorderRadius)));
+      imageProvider.resolve(const ImageConfiguration()).addListener(
+        ImageStreamListener(
+          (ImageInfo imageInfo, bool synchronousCall) {
+            final Rect rect = Rect.fromLTWH(
+              imageX,
+              imageY,
+              imageSize,
+              imageSize,
+            );
+            canvas.drawImageRect(
+              imageInfo.image,
+              Rect.fromLTRB(0, 0, imageInfo.image.width.toDouble(), imageInfo.image.height.toDouble()),
+              rect,
+              Paint(),
+            );
+          },
+        ),
+      );
+      canvas.restore();
+
       // Label
-      final label = detectedObject.label;
       final capitalizedLabel = label.substring(0, 1).toUpperCase() + label.substring(1); // Capitalize first letter
+      // Create a TextStyle with Google Fonts
+      final googleFontTextStyle = ui.TextStyle(
+        fontFamily: GoogleFonts.poppins().fontFamily, // Specify the Google Font family
+        fontSize: 24, // Increase font size
+        fontWeight: FontWeight.normal, // Set to bold
+        color: Colors.white,
+        // You can add more properties here as needed
+      );
+
+      // Create the label builder with the Google Font TextStyle
       final labelBuilder = ui.ParagraphBuilder(
         ui.ParagraphStyle(
           textAlign: TextAlign.center,
-          fontSize: 24, // Increase font size
-          fontWeight: FontWeight.bold, // Set to bold
           textDirection: TextDirection.ltr,
         ),
       )
-        ..pushStyle(
-          ui.TextStyle(
-            color: Colors.white,
-            background: Paint()..color = colors[detectedObject.index % colors.length].withOpacity(0), 
-          ),
-        )
+        ..pushStyle(googleFontTextStyle)
         ..addText(capitalizedLabel);
       final labelParagraph = labelBuilder.build()..layout(ui.ParagraphConstraints(width: width));
 

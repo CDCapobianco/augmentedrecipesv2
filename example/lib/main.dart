@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo_example/app.dart';
 import 'package:typewritertext/typewritertext.dart';
 import 'package:video_player/video_player.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(
@@ -40,23 +41,67 @@ class WelcomePage extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
+          // Background video widget
           const BackgroundVideoWidget(),
+          // Positioned text
+          Positioned(
+            top: 40, // Adjust top position as needed
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 20, // Adjust the size of the star icon
+                  ),
+                  SizedBox(width: 5), // Add space between the star and the text
+                  Flexible(
+                    child: Column(
+                      children: [
+                        Text(
+                          '2+ millions',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: 18, // Adjust the font size
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white, // Change text color to white
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'Premium Recipes',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: 14, // Adjust the font size
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white, // Change text color to white
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           // Centered content
           Center(
             child: Container(
-              height: 200, // Adjust the height as needed
-              child: const TypeWriterText(
-                text: Text(
-                  'What\'s for dinner tonight?',
-                  style: TextStyle(
-                    fontSize: 30,
+              height: 100, // Adjust the height as needed
+              child: Text(
+                'What\'s for dinner tonight?',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 33,
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Change text color to white
                   ),
-                  textAlign: TextAlign.center, // Center text horizontally
                 ),
-                duration: Duration(milliseconds: 75),
+                textAlign: TextAlign.center, // Center text horizontally
               ),
             ),
           ),
@@ -92,6 +137,7 @@ class WelcomePage extends StatelessWidget {
     );
   }
 }
+
 class BackgroundVideoWidget extends StatefulWidget {
   const BackgroundVideoWidget({super.key});
 

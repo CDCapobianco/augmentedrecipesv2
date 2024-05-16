@@ -1,46 +1,58 @@
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
 
 class RecipeDetailsPage extends StatelessWidget {
   final dynamic recipeData;
 
   const RecipeDetailsPage({Key? key, required this.recipeData}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final recipe = recipeData['recipe'];
+@override
+Widget build(BuildContext context) {
+  final recipe = recipeData['recipe'];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(recipe['label']),
-        backgroundColor: Colors.deepOrangeAccent,
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.blue, // Set background color to blue
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back), // Add back button
+        color: Colors.white,
+        onPressed: () {
+          Navigator.of(context).pop(); // Navigate back when button is pressed
+        },
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-          image: AssetImage('assets/backgroundImageRecipeView.jpg'), // Sostituisci 'assets/background_image.jpg' con il percorso dell'immagine di sfondo desiderata
-          fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildRecipeImage(recipe['image']),
-                    SizedBox(height: 16),
-                    _buildNutrientsSection(recipe['totalNutrients'], recipe['totalWeight']),
-                    SizedBox(height: 16),
-                    checkHealtyness(recipe['totalNutrients'], recipe['totalWeight']),
-                    SizedBox(height: 16),
-                    _buildCO2EmissionsBox(recipe['totalCO2Emissions'], recipe['totalWeight']),
-                    SizedBox(height: 16),
-                    _buildButtons(recipe['url'], recipe['label']),
-                ],
+      title: Text('Details', style: GoogleFonts.poppins( // Applying Poppins font
+        textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),
+      )), // Add 'Details' title in the top center
+      centerTitle: true,
+      toolbarHeight: 80,
+      elevation: 0.0,
+      scrolledUnderElevation: 0.0,
+    ),
+    body: Container(
+      color: Colors.blue, // Set the background color of the entire body to blue
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(height: kToolbarHeight), // Space for top bar
+              SizedBox(height: 16), // Additional space
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: _buildRecipeInfoBox(context, recipe),
+                ),
               ),
+            ],
+          ),
+          Positioned(
+            top: 0,
+            left: MediaQuery.of(context).size.width / 4, // Position image in the center horizontally
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width / 2, // Set image height to half of screen width
+              width: MediaQuery.of(context).size.width / 2, // Set image width to half of screen width
+              child: _buildRecipeImage(recipe['image']),
             ),
           ),
         ],
@@ -48,19 +60,72 @@ class RecipeDetailsPage extends StatelessWidget {
     ),
   );
 }
-  
-  Widget _buildRecipeImage(String imageUrl) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+
+
+Widget _buildRecipeImage(String imageUrl) {
+  return Container(
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 5,
+          blurRadius: 15,
+          offset: Offset(3, 3),
+        ),
+      ],
+    ),
+    child: ClipOval(
       child: Image.network(
         imageUrl,
-        height: 200,
+        height: 250,
+        width: 250,
         fit: BoxFit.cover,
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildCO2EmissionsBox(double totalCO2Emissions, double totalWeight) {
+Widget _buildRecipeInfoBox(BuildContext context,dynamic recipe) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Color.fromARGB(255, 255, 255, 255),
+      borderRadius: BorderRadius.circular(40),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 3,
+          blurRadius: 5,
+          offset: Offset(0, 3),
+        ),
+      ],
+    ),
+    padding: EdgeInsets.fromLTRB(16, 32 + MediaQuery.of(context).size.width / 4, 16, 16),
+    child: ListView(
+      children: [
+        Text(
+          recipe['label'],
+          style: GoogleFonts.poppins( // Applying Poppins font
+            textStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.black),
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 32), // Add some space here
+        _buildHealthiness(recipe['totalNutrients'], recipe['totalWeight']),
+        SizedBox(height: 32), // Add some space here
+        _buildNutrients(recipe['totalNutrients'], recipe['totalWeight']),
+        SizedBox(height: 32), // Add some space here
+        _buildCO2Emissions(recipe['totalCO2Emissions'], recipe['totalWeight']),
+        SizedBox(height: 32), // Add some space here
+        _buildButtons(recipe['url'], recipe['label']),
+        SizedBox(height: 32), // Add some space here
+
+      ],
+    ),
+  );
+}
+
+  Widget _buildCO2Emissions(double totalCO2Emissions, double totalWeight) {
     double emissionsPer100g = (totalCO2Emissions * 100 / totalWeight).round().toDouble();
     bool isHighEmission = emissionsPer100g >= 1000;
     bool isModerateEmission = emissionsPer100g >= 500 && emissionsPer100g < 1000;
@@ -71,7 +136,9 @@ class RecipeDetailsPage extends StatelessWidget {
       iconData = Icons.sentiment_dissatisfied_outlined;
       iconColor = Colors.red;
       textColor = Colors.red;
-    }
+   
+
+ }
     else if(isModerateEmission){
       iconData = Icons.sentiment_neutral_rounded;
       iconColor = Colors.orange;
@@ -82,135 +149,85 @@ class RecipeDetailsPage extends StatelessWidget {
       iconColor = Colors.green;
       textColor = Colors.green;
     }
-    
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 3,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Icon(
-            iconData,
-            color: iconColor,
-            size: 40,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'CO2 Emissions',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '$emissionsPer100g g CO2 per 100g',
-                  style: TextStyle(fontSize: 16, color: textColor),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecipeInfo(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                label,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              PopupMenuButton(
-                icon: Icon(Icons.help_outline, size: 15),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text('Cooking with care,\nreducing our carbon fare'),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNutrientsSection(Map<String, dynamic> nutrients, double totalWeigth) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 3,
-          blurRadius: 5,
-          offset: Offset(0, 3),
-        ),
-      ],
-    ),
-    padding: EdgeInsets.all(16),
-    child: ExpansionTile(
-      title: const Text(
-        'Nutrients per 100 g',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
+    return Row(
       children: [
-        _buildNutrientItem(nutrients['ENERC_KCAL']['label'], nutrients['ENERC_KCAL']['quantity']*100/totalWeigth, nutrients['ENERC_KCAL']['unit']),
-        _buildNutrientItem(nutrients['PROCNT']['label'], nutrients['PROCNT']['quantity']*100/totalWeigth, nutrients['PROCNT']['unit']),
-        _buildNutrientItem(nutrients['FAT']['label'], nutrients['FAT']['quantity']*100/totalWeigth, nutrients['FAT']['unit']),
-        _buildNutrientItem(nutrients['CHOCDF']['label'], nutrients['CHOCDF']['quantity']*100/totalWeigth, nutrients['CHOCDF']['unit']),
-        _buildNutrientItem('          Whose sugars', nutrients['SUGAR']['quantity']*100/totalWeigth, nutrients['SUGAR']['unit']),
-        ExpansionTile(
-          title: const Text(
-            'Vitamine',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+        Icon(
+          iconData,
+          color: iconColor,
+          size: 40,
+        ),
+        SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (nutrients['VITA_RAE']['quantity'] != 0) _buildNutrientItem(nutrients['VITA_RAE']['label'], nutrients['VITA_RAE']['quantity']*100/totalWeigth, nutrients['VITA_RAE']['unit']),
-            if (nutrients['VITC']['quantity'] != 0) _buildNutrientItem(nutrients['VITC']['label'], nutrients['VITC']['quantity']*100/totalWeigth, nutrients['VITC']['unit']),
-            if (nutrients['THIA']['quantity'] != 0) _buildNutrientItem(nutrients['THIA']['label'], nutrients['THIA']['quantity']*100/totalWeigth, nutrients['THIA']['unit']),
-            if (nutrients['RIBF']['quantity'] != 0) _buildNutrientItem(nutrients['RIBF']['label'], nutrients['RIBF']['quantity']*100/totalWeigth, nutrients['RIBF']['unit']),
-            if (nutrients['NIA']['quantity'] != 0) _buildNutrientItem(nutrients['NIA']['label'], nutrients['NIA']['quantity']*100/totalWeigth, nutrients['NIA']['unit']),
-            if (nutrients['VITB6A']['quantity'] != 0) _buildNutrientItem(nutrients['VITB6A']['label'], nutrients['VITB6A']['quantity']*100/totalWeigth, nutrients['VITB6A']['unit']),
+            Text(
+              'CO2 Emissions',
+              style: GoogleFonts.poppins( // Applying Poppins font
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+            ),
+            Text(
+              '$emissionsPer100g g CO2 per 100g',
+              style: GoogleFonts.poppins( // Applying Poppins font
+                textStyle: TextStyle(fontSize: 16, color: textColor),
+              ),
+            ),
           ],
         ),
       ],
+    );
+  }
+
+ Widget _buildNutrients(Map<String, dynamic> nutrients, double totalWeight) {
+  return ExpansionTile(
+    title: Text(
+      'Nutrients per 100 g',
+      style: GoogleFonts.poppins( // Applying Poppins font
+        textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      ),
+    ),
+    children: [
+      SizedBox(height: 8),
+      ..._buildNutrientItems(nutrients, totalWeight),
+    ],
+  );
+}
+
+List<Widget> _buildNutrientItems(Map<String, dynamic> nutrients, double totalWeight) {
+  return [
+    _buildNutrientItem(nutrients['ENERC_KCAL']['label'], nutrients['ENERC_KCAL']['quantity']*100/totalWeight, nutrients['ENERC_KCAL']['unit']),
+    _buildNutrientItem(nutrients['PROCNT']['label'], nutrients['PROCNT']['quantity']*100/totalWeight, nutrients['PROCNT']['unit']),
+    _buildNutrientItem(nutrients['FAT']['label'], nutrients['FAT']['quantity']*100/totalWeight, nutrients['FAT']['unit']),
+    _buildNutrientItem(nutrients['CHOCDF']['label'], nutrients['CHOCDF']['quantity']*100/totalWeight, nutrients['CHOCDF']['unit']),
+    _buildNutrientItem('Whose sugars', nutrients['SUGAR']['quantity']*100/totalWeight, nutrients['SUGAR']['unit']),
+    if (nutrients['VITA_RAE']['quantity'] != 0) _buildNutrientItem(nutrients['VITA_RAE']['label'], nutrients['VITA_RAE']['quantity']*100/totalWeight, nutrients['VITA_RAE']['unit']),
+    if (nutrients['VITC']['quantity'] != 0) _buildNutrientItem(nutrients['VITC']['label'], nutrients['VITC']['quantity']*100/totalWeight, nutrients['VITC']['unit']),
+    if (nutrients['THIA']['quantity'] != 0) _buildNutrientItem(nutrients['THIA']['label'], nutrients['THIA']['quantity']*100/totalWeight, nutrients['THIA']['unit']),
+    if (nutrients['RIBF']['quantity'] != 0) _buildNutrientItem(nutrients['RIBF']['label'], nutrients['RIBF']['quantity']*100/totalWeight, nutrients['RIBF']['unit']),
+    if (nutrients['NIA']['quantity'] != 0) _buildNutrientItem(nutrients['NIA']['label'], nutrients['NIA']['quantity']*100/totalWeight, nutrients['NIA']['unit']),
+    if (nutrients['VITB6A']['quantity'] != 0) _buildNutrientItem(nutrients['VITB6A']['label'], nutrients['VITB6A']['quantity']*100/totalWeight, nutrients['VITB6A']['unit']),
+  ];
+}
+
+Widget _buildNutrientItem(String label, double quantity, String unit) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Text(
+      '$label: ${quantity.round()} $unit',
+      style: GoogleFonts.poppins( // Applying Poppins font
+        textStyle: TextStyle(fontSize: 16),
+      ),
     ),
   );
 }
 
-
-  Widget checkHealtyness(Map<String, dynamic> nutrients, double totalWeigth){
-  double carbo = nutrients['CHOCDF']['quantity']*100/totalWeigth;
-  double protein = nutrients['PROCNT']['quantity']*100/totalWeigth;
-  double sugar = nutrients['SUGAR']['quantity']*100/totalWeigth;
-  double fat = nutrients['FAT']['quantity']*100/totalWeigth;
-  totalWeigth = 100;
+Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
+  double carbo = nutrients['CHOCDF']['quantity']*100/totalWeight;
+  double protein = nutrients['PROCNT']['quantity']*100/totalWeight;
+  double sugar = nutrients['SUGAR']['quantity']*100/totalWeight;
+  double fat = nutrients['FAT']['quantity']*100/totalWeight;
+  totalWeight = 100;
   double calorieProteine = protein * 4;
   double calorieCarboidrati = carbo * 4;
   double calorieGrassi = fat * 9;
@@ -218,7 +235,7 @@ class RecipeDetailsPage extends StatelessWidget {
   double percProt = (calorieProteine / calorieTotali) * 100;
   double percCarb = (calorieCarboidrati / calorieTotali) * 100;
   double percFat = (calorieGrassi / calorieTotali) * 100;
-  double percSug = (sugar / totalWeigth) * 100;
+  double percSug = (sugar / totalWeight) * 100;
   double score = 0;
   bool p=false, c=false, f=false, s= false, v = false;
   if(percProt >= 20) { score = score + 20; p=true; }
@@ -228,70 +245,73 @@ class RecipeDetailsPage extends StatelessWidget {
   if(nutrients['VITA_RAE']['quantity'] != 0 && nutrients['VITC']['quantity'] != 0 && nutrients['THIA']['quantity'] != 0 && nutrients['NIA']['quantity'] != 0 && nutrients['VITB6A']['quantity'] != 0){
     score = score + 20; v=true;
   }
-  
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 3,
-          blurRadius: 5,
-          offset: Offset(0, 3),
-        ),
-      ],
-    ),
-    padding: EdgeInsets.all(16),
-    child: HealthBar(
-      score: score,
-      proteinGood: p,
-      carbGood: c,
-      fatGood: f,
-      sugarGood: s,
-      vitaminsGood: v,
-    ),
-  );
-}
 
-  Widget _buildNutrientItem(String label, double quantity, String unit) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
-          Text(
-            '${quantity.round()} $unit',
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
-Widget _buildButtons(String url, String label) {
   return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      CustomButton(
-        text: 'View Recipe Info',
-        onPressed: () {
-          _launchURL(url);
-        },
+      Text(
+        'Healthiness Score',
+        style: GoogleFonts.poppins( // Applying Poppins font
+          textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        ),
       ),
-      SizedBox(height: 16),
-      CustomButton(
-        text: 'Search on Giallo Zafferano',
-        onPressed: () {
-          _launchURL('https://www.giallozafferano.it/ricerca-ricette/'+Uri.encodeComponent(label));
-        },
+      SizedBox(height: 8),
+      SizedBox(height: 8),
+      HealthBar(
+        score: score,
+        proteinGood: p,
+        carbGood: c,
+        fatGood: f,
+        sugarGood: s,
+        vitaminsGood: v,
       ),
     ],
   );
 }
+
+  Widget _buildHealthinessItem(String nutrient, double percentage, bool isGood) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          nutrient,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          '${percentage.toStringAsFixed(0)}%',
+          style: TextStyle(
+            color: isGood ? Colors.green : Colors.red,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons(String url, String label) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CustomButton(
+          text: 'Get the Recipe',
+          onPressed: () {
+            _launchURL(url);
+          },
+        ),
+        SizedBox(height: 16),
+        CustomButton(
+          text: 'Search on GialloZafferano',
+          onPressed: () {
+            _launchURL('https://www.giallozafferano.it/ricerca-ricette/'+Uri.encodeComponent(label));
+          },
+        ),
+      ],
+    );
+  }
+
   void _launchURL(String url) async {
     Uri uri = Uri.parse(url);
     await launchUrl(uri);
@@ -319,9 +339,9 @@ class CustomButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 7,
-              offset: Offset(0, 3),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: Offset(0, 1),
             ),
           ],
         ),
@@ -329,10 +349,12 @@ class CustomButton extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          style: GoogleFonts.poppins( // Applying Poppins font
+            textStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -361,14 +383,6 @@ class HealthBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Healthyness Score',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        ),
         SizedBox(height: 8),
         SizedBox(
           height: 24, // Imposta l'altezza desiderata per la barra
@@ -395,16 +409,16 @@ class HealthBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (proteinGood) _buildNutrientCheck('Proteine', true),
-            if (carbGood) _buildNutrientCheck('Carboidrati', true),
-            if (fatGood) _buildNutrientCheck('Grassi', true),
-            if (sugarGood) _buildNutrientCheck('Zuccheri', true),
-            if (vitaminsGood) _buildNutrientCheck('Vitamine', true),
-            if (!proteinGood) _buildNutrientCheck('Proteine', false),
-            if (!carbGood) _buildNutrientCheck('Carboidrati', false),
-            if (!fatGood) _buildNutrientCheck('Grassi', false),
-            if (!sugarGood) _buildNutrientCheck('Zuccheri', false),
-            if (!vitaminsGood) _buildNutrientCheck('Vitamine', false),
+            if (proteinGood) _buildNutrientCheck('Protein', true),
+            if (carbGood) _buildNutrientCheck('Carbs', true),
+            if (fatGood) _buildNutrientCheck('Fat', true),
+            if (sugarGood) _buildNutrientCheck('Sugar', true),
+            if (vitaminsGood) _buildNutrientCheck('Vitamin', true),
+            if (!proteinGood) _buildNutrientCheck('Protein', false),
+            if (!carbGood) _buildNutrientCheck('Carbs', false),
+            if (!fatGood) _buildNutrientCheck('Fat', false),
+            if (!sugarGood) _buildNutrientCheck('Sugar', false),
+            if (!vitaminsGood) _buildNutrientCheck('Vitamin', false),
           ],
         ),
       ],
