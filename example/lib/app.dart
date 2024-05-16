@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo.dart';
+import 'package:ultralytics_yolo_example/main.dart';
 import 'package:ultralytics_yolo_example/providers/api_controller.dart';
 import 'package:ultralytics_yolo_example/providers/permissions_controller.dart';
 import 'package:ultralytics_yolo_example/providers/query_provider.dart';
@@ -24,6 +25,16 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+        title: Text('Go Back'),
+        backgroundColor: Colors.deepOrangeAccent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop(); // Torna alla pagina precedente
+          },
+        ),
+      ),
         body: hasPermissionsValue.when(
           data: (hasPermissions) => Stack(
             alignment: Alignment.center,

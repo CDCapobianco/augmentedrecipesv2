@@ -115,12 +115,12 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MyApp()),
+                    MaterialPageRoute(builder: (context) => MyApp()),
                   );
                 },
                 icon: const Icon(Icons.arrow_forward),
                 label: const Text(
-                  'Start Cooking',
+                  'Get Started',
                   style: TextStyle(fontSize: 15),
                 ),
                 style: ElevatedButton.styleFrom(
