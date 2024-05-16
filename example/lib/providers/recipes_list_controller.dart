@@ -48,7 +48,7 @@ class _ListRecipesState extends State<ListRecipes> {
         title: Text(
           'Discover',
           style: GoogleFonts.poppins(
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),
@@ -62,7 +62,7 @@ class _ListRecipesState extends State<ListRecipes> {
         color: Colors.white,
         child: Column(
           children: [
-            SizedBox(height: 100), // Adjust as needed
+            const SizedBox(height: 100), // Adjust as needed
             Expanded(
               child: PageView.builder(
                 scrollDirection: Axis.horizontal,
@@ -159,6 +159,7 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
               ),
               const SizedBox(height: 8), // Add space between title and details
               _buildRecipeDetail("", checkHealtiness(recipe['totalNutrients'], recipe['totalWeight'])),
+
             ],
           ),
         ),

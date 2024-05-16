@@ -11,7 +11,7 @@ class ApiManager {
   ///andrà modificata inserendo una query di request contenente
   ///gli ingredienti da ricercare separati dal''operatore '+'  di concatenazione
   static Future<void> makeApiRequest(BuildContext context, String queryLabel ) async {
-    bool test = false;
+    print(queryLabel);
     try {
       print('RICHIESTA API');
       final response = await http.get(Uri.parse(
