@@ -33,7 +33,7 @@ class ListRecipes {
                       onTap: () {
                         _showRecipeDetails(context, recipeData);
                       },
-                      child: _buildRecipeWidget(recipeData),
+                      child: buildRecipeWidget(recipeData),
                     ),
                     _buildDivider(),
                   ],
@@ -60,7 +60,7 @@ class ListRecipes {
     );
   }
 
-  static Widget _buildRecipeWidget(dynamic recipeData) {
+  static Widget buildRecipeWidget(dynamic recipeData) {
     final recipe = recipeData['recipe'];
 
     return Card(
