@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ultralytics_yolo_example/providers/recipes_list_controller.dart';
 
 class ApiManager {
@@ -11,7 +9,6 @@ class ApiManager {
   ///andrà modificata inserendo una query di request contenente
   ///gli ingredienti da ricercare separati dal''operatore '+'  di concatenazione
   static Future<void> makeApiRequest(BuildContext context, String queryLabel ) async {
-    print(queryLabel);
     try {
       print('RICHIESTA API');
       final response = await http.get(Uri.parse(
