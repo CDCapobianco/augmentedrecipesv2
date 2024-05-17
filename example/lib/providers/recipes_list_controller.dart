@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ultralytics_yolo_example/widgets/recipe_view.dart';
@@ -10,16 +11,26 @@ class ListRecipes extends StatefulWidget {
   @override
   _ListRecipesState createState() => _ListRecipesState();
 
-  static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
-    final List<dynamic> recipes = jsonResponse['hits'].take(5).toList();
+static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
+  final List<dynamic> recipes = jsonResponse['hits'].take(5).toList();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ListRecipes(jsonResponse: jsonResponse),
-      ),
-    );
-  }
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.0, 1.0), // Slide from bottom to top
+            end: Offset.zero,
+          ).animate(animation),
+          child: ListRecipes(jsonResponse: jsonResponse),
+        );
+      },
+    ),
+  );
+}
+
 }
 
 class _ListRecipesState extends State<ListRecipes> {
@@ -59,7 +70,7 @@ class _ListRecipesState extends State<ListRecipes> {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 255, 255, 255),
         child: Column(
           children: [
             const SizedBox(height: 100), // Adjust as needed
@@ -115,12 +126,8 @@ class _ListRecipesState extends State<ListRecipes> {
 
 Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
   final recipe = recipeData['recipe'];
-  final whiteBoxWidth = MediaQuery.of(context).size.width / 1.55;
-  final whiteBoxHeight = MediaQuery.of(context).size.height / 3;
-  final circleImageSize = MediaQuery.of(context).size.width / 2;
-
-  final circleImageTop = (circleImageSize / 2 - whiteBoxHeight / 2);
-  final circleImageLeft = (whiteBoxWidth - circleImageSize) / 2;
+  final imageBoxWidth = MediaQuery.of(context).size.width / 1.35;
+  final imageBoxHeight = MediaQuery.of(context).size.height / 2.2;
 
   return GestureDetector(
     onTap: () {
@@ -130,10 +137,9 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: whiteBoxWidth,
-          height: whiteBoxHeight,
+          width: imageBoxWidth,
+          height: imageBoxHeight,
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
             boxShadow: [
               BoxShadow(
@@ -144,47 +150,56 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
               ),
             ],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: circleImageSize/1.5), // Add space between title and details
-              Text(
-                capitalizeInitials(recipe['label']),
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  recipe['image'],
+                  fit: BoxFit.cover,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8), // Add space between title and details
-              _buildRecipeDetail("", checkHealtiness(recipe['totalNutrients'], recipe['totalWeight'])),
-
-            ],
-          ),
-        ),
-        Positioned(
-          top: circleImageTop,
-          left: circleImageLeft,
-          child: Container(
-            width: circleImageSize,
-            height: circleImageSize,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AutoSizeText(
+                        capitalizeInitials(recipe['label']),
+                        style: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        minFontSize: 8,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      _buildRecipeDetail("", checkHealtiness(recipe['totalNutrients'], recipe['totalWeight'])),
+                    ],
+                  ),
                 ),
               ],
-            ),
-            child: ClipOval(
-              child: Image.network(
-                recipe['image'],
-                fit: BoxFit.cover,
-              ),
             ),
           ),
         ),
@@ -194,15 +209,31 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
 }
 
 
+void _showRecipeDetails(BuildContext context, dynamic recipeData) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true, // Ensure the modal takes up full height
+    backgroundColor: Colors.transparent, // Make the background transparent
+    builder: (BuildContext context) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.0, 1.0), // Slide up from bottom
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: ModalRoute.of(context)!.animation!,
+          curve: Curves.easeInOut,
+          reverseCurve: Curves.easeOut,
+        )),
+        child: _buildDialogContainer(context, recipeData),
+      );
+    },
+  );
+}
 
-  static void _showRecipeDetails(BuildContext context, dynamic recipeData) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecipeDetailsPage(recipeData: recipeData),
-      ),
-    );
-  }
+Widget _buildDialogContainer(BuildContext context, dynamic recipeData) {
+  return RecipeDetailsPage(recipeData: recipeData);
+}
+
 
   Widget _buildRecipeDetail(String label, String value) {
   Color? healthScoreColor;
@@ -327,3 +358,4 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
   }
 
 }
+

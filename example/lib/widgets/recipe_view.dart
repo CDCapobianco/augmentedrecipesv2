@@ -11,48 +11,49 @@ class RecipeDetailsPage extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   final recipe = recipeData['recipe'];
+  Color backgroundColor = Color.fromARGB(255, 9, 24, 0);
 
   return Scaffold(
-    appBar: AppBar(
-      backgroundColor: Colors.blue, // Set background color to blue
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back), // Add back button
-        color: Colors.white,
-        onPressed: () {
-          Navigator.of(context).pop(); // Navigate back when button is pressed
-        },
-      ),
-      title: Text('Details', style: GoogleFonts.poppins( // Applying Poppins font
-        textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),
-      )), // Add 'Details' title in the top center
-      centerTitle: true,
-      toolbarHeight: 80,
-      elevation: 0.0,
-      scrolledUnderElevation: 0.0,
-    ),
+    backgroundColor: Color.fromARGB(0, 0, 0, 0), // Set Scaffold background to transparent
+    extendBodyBehindAppBar: true, // Extend the body behind the AppBar
     body: Container(
-      color: Colors.blue, // Set the background color of the entire body to blue
+      color: Colors.transparent, // Set Container background to transparent
       child: Stack(
         children: [
           Column(
             children: [
-              SizedBox(height: kToolbarHeight), // Space for top bar
-              SizedBox(height: 16), // Additional space
+              const SizedBox(height: kToolbarHeight), // Space for top bar
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _buildRecipeInfoBox(context, recipe),
-                ),
+                child: _buildRecipeInfoBox(context, recipe), // Removed padding to make it full width
               ),
             ],
           ),
+          
           Positioned(
-            top: 0,
-            left: MediaQuery.of(context).size.width / 4, // Position image in the center horizontally
+            top: MediaQuery.of(context).size.height / 6,
+            left: (MediaQuery.of(context).size.width - (MediaQuery.of(context).size.width / 1.5)) / 2, // Center the image horizontally
             child: SizedBox(
-              height: MediaQuery.of(context).size.width / 2, // Set image height to half of screen width
-              width: MediaQuery.of(context).size.width / 2, // Set image width to half of screen width
+              height: MediaQuery.of(context).size.width / 1.5, // Set image height
+              width: MediaQuery.of(context).size.width / 1.5, // Set image width
               child: _buildRecipeImage(recipe['image']),
+            ),
+          ),
+          Positioned(
+            top: (MediaQuery.of(context).size.height / 4) + (MediaQuery.of(context).size.width / 1.5) - 50,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                recipe['label'],
+                style: GoogleFonts.poppins(
+                  textStyle: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],
@@ -60,6 +61,49 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
+
+Widget _buildRecipeInfoBox(BuildContext context, dynamic recipe) {
+  double screenWidth = MediaQuery.of(context).size.width;
+  double screenHeight = MediaQuery.of(context).size.height;
+
+  return Container(
+    width: screenWidth,
+    margin: EdgeInsets.only(top: 32 + screenWidth / 4), // Top margin to align with image
+    decoration: BoxDecoration(
+      color: const Color.fromARGB(255, 255, 255, 255),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 3,
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Container(
+      margin: EdgeInsets.only(
+        top: screenHeight / 6 + screenWidth / 1.5 - 110, // Margin set just below the title
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16), // Padding inside the inner container
+      child: ListView(
+        padding: EdgeInsets.zero, // Remove ListView padding
+        children: [
+          _buildHealthiness(recipe['totalNutrients'], recipe['totalWeight']),
+          const SizedBox(height: 32),
+          _buildNutrients(recipe['totalNutrients'], recipe['totalWeight']),
+          const SizedBox(height: 32),
+          _buildCO2Emissions(recipe['totalCO2Emissions'], recipe['totalWeight']),
+          const SizedBox(height: 32),
+          _buildButtons(recipe['url'], recipe['label']),
+          const SizedBox(height: 32),
+        ],
+      ),
+    ),
+  );
+}
+
 
 
 Widget _buildRecipeImage(String imageUrl) {
@@ -71,7 +115,7 @@ Widget _buildRecipeImage(String imageUrl) {
           color: Colors.grey.withOpacity(0.5),
           spreadRadius: 5,
           blurRadius: 15,
-          offset: Offset(3, 3),
+          offset: const Offset(3, 3),
         ),
       ],
     ),
@@ -85,46 +129,6 @@ Widget _buildRecipeImage(String imageUrl) {
     ),
   );
 }
-
-Widget _buildRecipeInfoBox(BuildContext context,dynamic recipe) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Color.fromARGB(255, 255, 255, 255),
-      borderRadius: BorderRadius.circular(40),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 3,
-          blurRadius: 5,
-          offset: Offset(0, 3),
-        ),
-      ],
-    ),
-    padding: EdgeInsets.fromLTRB(16, 32 + MediaQuery.of(context).size.width / 4, 16, 16),
-    child: ListView(
-      children: [
-        Text(
-          recipe['label'],
-          style: GoogleFonts.poppins( // Applying Poppins font
-            textStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.black),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 32), // Add some space here
-        _buildHealthiness(recipe['totalNutrients'], recipe['totalWeight']),
-        SizedBox(height: 32), // Add some space here
-        _buildNutrients(recipe['totalNutrients'], recipe['totalWeight']),
-        SizedBox(height: 32), // Add some space here
-        _buildCO2Emissions(recipe['totalCO2Emissions'], recipe['totalWeight']),
-        SizedBox(height: 32), // Add some space here
-        _buildButtons(recipe['url'], recipe['label']),
-        SizedBox(height: 32), // Add some space here
-
-      ],
-    ),
-  );
-}
-
   Widget _buildCO2Emissions(double totalCO2Emissions, double totalWeight) {
     double emissionsPer100g = (totalCO2Emissions * 100 / totalWeight).round().toDouble();
     bool isHighEmission = emissionsPer100g >= 1000;
@@ -157,14 +161,14 @@ Widget _buildRecipeInfoBox(BuildContext context,dynamic recipe) {
           color: iconColor,
           size: 40,
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'CO2 Emissions',
               style: GoogleFonts.poppins( // Applying Poppins font
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ),
             Text(
@@ -184,11 +188,11 @@ Widget _buildRecipeInfoBox(BuildContext context,dynamic recipe) {
     title: Text(
       'Nutrients per 100 g',
       style: GoogleFonts.poppins( // Applying Poppins font
-        textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
     ),
     children: [
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       ..._buildNutrientItems(nutrients, totalWeight),
     ],
   );
@@ -216,7 +220,7 @@ Widget _buildNutrientItem(String label, double quantity, String unit) {
     child: Text(
       '$label: ${quantity.round()} $unit',
       style: GoogleFonts.poppins( // Applying Poppins font
-        textStyle: TextStyle(fontSize: 16),
+        textStyle: const TextStyle(fontSize: 16),
       ),
     ),
   );
@@ -252,11 +256,11 @@ Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
       Text(
         'Healthiness Score',
         style: GoogleFonts.poppins( // Applying Poppins font
-          textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+          textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
         ),
       ),
-      SizedBox(height: 8),
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
+      const SizedBox(height: 8),
       HealthBar(
         score: score,
         proteinGood: p,
@@ -275,12 +279,12 @@ Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
       children: [
         Text(
           nutrient,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Text(
           '${percentage.toStringAsFixed(0)}%',
           style: TextStyle(
@@ -301,7 +305,7 @@ Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
             _launchURL(url);
           },
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         CustomButton(
           text: 'Search on GialloZafferano',
           onPressed: () {
@@ -334,23 +338,23 @@ class CustomButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.redAccent,
+          color: const Color.fromARGB(255, 0, 0, 0),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 1,
               blurRadius: 2,
-              offset: Offset(0, 1),
+              offset: const Offset(0, 1),
             ),
           ],
         ),
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: Alignment.center,
         child: Text(
           text,
           style: GoogleFonts.poppins( // Applying Poppins font
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -383,7 +387,7 @@ class HealthBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         SizedBox(
           height: 24, // Imposta l'altezza desiderata per la barra
           child: Stack(
@@ -392,12 +396,12 @@ class HealthBar extends StatelessWidget {
               LinearProgressIndicator(
                 value: score / 100,
                 backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
                 minHeight: 24, // Imposta l'altezza della barra
               ),
               Text(
                 '${score.toStringAsFixed(0)}%', // Visualizza la percentuale dello score
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
@@ -405,7 +409,7 @@ class HealthBar extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -433,7 +437,7 @@ class HealthBar extends StatelessWidget {
             isGood ? Icons.check_circle : Icons.error,
             color: isGood ? Colors.green : Colors.red,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             nutrient,
             style: TextStyle(

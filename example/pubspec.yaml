@@ -32,6 +32,7 @@ dependencies:
   typewritertext: ^3.0.3
   video_player: ^2.7.0
   google_fonts: ^6.0.0
+  auto_size_text: ^3.0.0  # Add this line
 
 dev_dependencies:
   build_runner: ^2.4.6  

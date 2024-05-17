@@ -52,19 +52,19 @@ class WelcomePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.star,
                     color: Colors.white,
                     size: 20, // Adjust the size of the star icon
                   ),
-                  SizedBox(width: 5), // Add space between the star and the text
+                  const SizedBox(width: 5), // Add space between the star and the text
                   Flexible(
                     child: Column(
                       children: [
                         Text(
                           '2+ millions',
                           style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 18, // Adjust the font size
                               fontWeight: FontWeight.bold,
                               color: Colors.white, // Change text color to white
@@ -74,10 +74,17 @@ class WelcomePage extends StatelessWidget {
                         Text(
                           'Premium Recipes',
                           style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 14, // Adjust the font size
                               fontWeight: FontWeight.w300,
                               color: Colors.white, // Change text color to white
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.black,
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -95,10 +102,17 @@ class WelcomePage extends StatelessWidget {
               child: Text(
                 'What\'s for dinner tonight?',
                 style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontSize: 33,
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Change text color to white
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.black,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
                   ),
                 ),
                 textAlign: TextAlign.center, // Center text horizontally
@@ -115,17 +129,18 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
+                    MaterialPageRoute(builder: (context) => const MyApp()),
                   );
                 },
                 icon: const Icon(Icons.arrow_forward),
                 label: const Text(
                   'Get Started',
                   style: TextStyle(fontSize: 15),
+                  
                 ),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, // Set text color to white
-                  backgroundColor: Colors.red, // Set button color to red
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0), // Set button color to red
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Set button padding
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Set button border radius
                 ),

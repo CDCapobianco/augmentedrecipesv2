@@ -17,6 +17,13 @@ class _MyAppState extends ConsumerState<MyApp> {
   final _cameraController = UltralyticsYoloCameraController();
 
   @override
+  void dispose() {
+    // Dispose of the camera controller to stop any background processes
+    _cameraController.dispose();
+    super.dispose();
+  }
+
+  @override
 Widget build(BuildContext context) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -44,6 +51,7 @@ Widget build(BuildContext context) {
                     onTap: value.isNotEmpty // Access the local variable
                         ? () {
                             ApiManager.makeApiRequest(context, value);
+                            dispose();
                           }
                         : null,
                     child: Container(
