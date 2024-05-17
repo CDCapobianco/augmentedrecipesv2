@@ -11,7 +11,6 @@ class RecipeDetailsPage extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   final recipe = recipeData['recipe'];
-  Color backgroundColor = Color.fromARGB(255, 9, 24, 0);
 
   return Scaffold(
     backgroundColor: Color.fromARGB(0, 0, 0, 0), // Set Scaffold background to transparent

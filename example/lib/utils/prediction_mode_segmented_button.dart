@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultralytics_yolo_example/providers/prediction_mode_controller.dart';
-import 'package:ultralytics_yolo_example/utils.dart';
+import 'package:ultralytics_yolo_example/controller/prediction_mode_controller.dart';
+import 'package:ultralytics_yolo_example/utils/utils.dart';
 
 class PredictionModeSegmentedButton extends ConsumerWidget {
   const PredictionModeSegmentedButton({super.key});

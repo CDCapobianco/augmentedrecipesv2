@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo.dart';
-import 'package:ultralytics_yolo_example/providers/object_detector.dart';
-import 'package:ultralytics_yolo_example/providers/query_provider.dart';
+import 'package:ultralytics_yolo_example/controller/object_detector.dart';
+import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 
 
 class DetectView extends ConsumerWidget {
@@ -31,7 +31,6 @@ class DetectView extends ConsumerWidget {
                 double confidenceThreshold = 0.6;
                 List<DetectedObject?> recipeList = snapshot.data!.where((object) => object!.confidence > confidenceThreshold).toList();
                 String listOfLabels = recipeList.map((object) => object!.label).join('+');
-                
                 // Update GlobalVariables.listaNotifier
                 GlobalVariables.listaNotifier.value = listOfLabels;
 

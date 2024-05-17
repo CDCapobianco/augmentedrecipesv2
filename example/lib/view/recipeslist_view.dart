@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ultralytics_yolo_example/widgets/recipe_view.dart';
+import 'package:ultralytics_yolo_example/view/recipe_view.dart';
 
 class ListRecipes extends StatefulWidget {
   final dynamic jsonResponse;
@@ -12,7 +12,6 @@ class ListRecipes extends StatefulWidget {
   _ListRecipesState createState() => _ListRecipesState();
 
 static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
-  final List<dynamic> recipes = jsonResponse['hits'].take(5).toList();
 
   Navigator.push(
     context,
@@ -195,7 +194,7 @@ Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
-                      _buildRecipeDetail("", checkHealtiness(recipe['totalNutrients'], recipe['totalWeight'])),
+                      _buildRecipeDetail("", checkHealthiness(recipe['totalNutrients'], recipe['totalWeight'])),
                     ],
                   ),
                 ),
@@ -281,68 +280,61 @@ Widget _buildDialogContainer(BuildContext context, dynamic recipeData) {
   );
 }
 
-  static String checkHealtiness(Map<String, dynamic> nutrients, double totalWeigth) {
-    double carbo = nutrients['CHOCDF']['quantity'] * 100 / totalWeigth;
-    double protein = nutrients['PROCNT']['quantity'] * 100 / totalWeigth;
-    double sugar = nutrients['SUGAR']['quantity'] * 100 / totalWeigth;
-    double fat = nutrients['FAT']['quantity'] * 100 / totalWeigth;
-    totalWeigth = 100;
-    double calorieProteine = protein * 4;
-    double calorieCarboidrati = carbo * 4;
-    double calorieGrassi = fat * 9;
-    double calorieTotali = calorieProteine + calorieCarboidrati + calorieGrassi;
-    double percProt = (calorieProteine / calorieTotali) * 100;
-    double percCarb = (calorieCarboidrati / calorieTotali) * 100;
-    double percFat = (calorieGrassi / calorieTotali) * 100;
+static String checkHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
+  double carbo = nutrients['CHOCDF']['quantity'] * 100 / totalWeight;
+  double protein = nutrients['PROCNT']['quantity'] * 100 / totalWeight;
+  double sugar = nutrients['SUGAR']['quantity'] * 100 / totalWeight;
+  double fat = nutrients['FAT']['quantity'] * 100 / totalWeight;
+  totalWeight = 100;
+  double calorieProtein = protein * 4;
+  double calorieCarbohydrates = carbo * 4;
+  double calorieFat = fat * 9;
+  double totalCalories = calorieProtein + calorieCarbohydrates + calorieFat;
+  double percProt = (calorieProtein / totalCalories) * 100;
+  double percCarb = (calorieCarbohydrates / totalCalories) * 100;
+  double percFat = (calorieFat / totalCalories) * 100;
 
-    // Calcola la percentuale di zuccheri rispetto al peso totale
-    double percSug = (sugar / totalWeigth) * 100;
-    double score = 0;
-    bool p = false, c = false, f = false, s = false, v = false;
-    if (percProt >= 20) {
-      score = score + 20;
-      p = true;
-    }
-    if (percCarb >= 45) {
-      score = score + 20;
-      c = true;
-    }
-    if (percFat <= 35) {
-      score = score + 20;
-      f = true;
-    }
-    if (percSug <= 10) {
-      score = score + 20;
-      s = true;
-    }
-    if (nutrients['VITA_RAE']['quantity'] != 0 &&
-        nutrients['VITC']['quantity'] != 0 &&
-        nutrients['THIA']['quantity'] != 0 &&
-        nutrients['NIA']['quantity'] != 0 &&
-        nutrients['VITB6A']['quantity'] != 0) {
-      score = score + 20;
-      v = true;
-    }
-    if (score == 0) {
-      return "Bad";
-    }
-    if (score == 20) {
-      return "Quite Bad";
-    }
-    if (score == 40) {
-      return "Balanced";
-    }
-    if (score == 60) {
-      return "Good";
-    }
-    if (score == 80) {
-      return "Quite Good";
-    }
-    if (score == 100) {
-      return "Excellent";
-    }
+  // Calculate percentage of sugars relative to total weight
+  double percSug = (sugar / totalWeight) * 100;
+  double score = 0;
+
+  if (percProt >= 20) {
+    score = score + 20;
+  }
+  if (percCarb >= 45) {
+    score = score + 20;
+  }
+  if (percFat <= 35) {
+    score = score + 20;
+  }
+  if (percSug <= 10) {
+    score = score + 20;
+  }
+  if (nutrients['VITA_RAE']['quantity'] != 0 &&
+      nutrients['VITC']['quantity'] != 0 &&
+      nutrients['THIA']['quantity'] != 0 &&
+      nutrients['NIA']['quantity'] != 0 &&
+      nutrients['VITB6A']['quantity'] != 0) {
+    score = score + 20;
+  }
+
+  if (score == 0) {
+    return "Bad";
+  } else if (score == 20) {
+    return "Quite Bad";
+  } else if (score == 40) {
+    return "Balanced";
+  } else if (score == 60) {
+    return "Good";
+  } else if (score == 80) {
+    return "Quite Good";
+  } else if (score == 100) {
+    return "Excellent";
+  } else {
     return "";
   }
+}
+
 
 
   String capitalizeInitials(String text) {

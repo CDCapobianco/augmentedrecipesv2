@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ultralytics_yolo_example/utils.dart';
+import 'package:ultralytics_yolo_example/utils/utils.dart';
 
 part 'prediction_mode_controller.g.dart';
 

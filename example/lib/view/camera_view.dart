@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo.dart';
-import 'package:ultralytics_yolo_example/providers/api_controller.dart';
-import 'package:ultralytics_yolo_example/providers/permissions_controller.dart';
-import 'package:ultralytics_yolo_example/providers/query_provider.dart';
-import 'package:ultralytics_yolo_example/widgets/detect_view.dart';
+import 'package:ultralytics_yolo_example/controller/api_controller.dart';
+import 'package:ultralytics_yolo_example/controller/permissions_controller.dart';
+import 'package:ultralytics_yolo_example/utils/query_provider.dart';
+import 'package:ultralytics_yolo_example/view/detect_view.dart';
 
-class MyApp extends ConsumerStatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class CameraView extends ConsumerStatefulWidget {
+  const CameraView({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
+  ConsumerState<CameraView> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<CameraView> {
   final _cameraController = UltralyticsYoloCameraController();
 
   @override
   void dispose() {
     // Dispose of the camera controller to stop any background processes
+    _cameraController.closeCamera();
     _cameraController.dispose();
     super.dispose();
   }
@@ -50,8 +51,8 @@ Widget build(BuildContext context) {
                   child: GestureDetector(
                     onTap: value.isNotEmpty // Access the local variable
                         ? () {
-                            ApiManager.makeApiRequest(context, value);
                             dispose();
+                            ApiManager.makeApiRequest(context, value);
                           }
                         : null,
                     child: Container(
