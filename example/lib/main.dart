@@ -44,81 +44,82 @@ class WelcomePage extends StatelessWidget {
           // Background video widget
           const BackgroundVideoWidget(),
           // Positioned text
-          Positioned(
-            top: 40, // Adjust top position as needed
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.star,
-                    color: Colors.white,
-                    size: 20, // Adjust the size of the star icon
-                  ),
-                  const SizedBox(width: 5), // Add space between the star and the text
-                  Flexible(
-                    child: Column(
-                      children: [
-                        Text(
-                          '2+ millions',
-                          style: GoogleFonts.poppins(
-                            textStyle: const TextStyle(
-                              fontSize: 18, // Adjust the font size
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white, // Change text color to white
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Premium Recipes',
-                          style: GoogleFonts.poppins(
-                            textStyle: const TextStyle(
-                              fontSize: 14, // Adjust the font size
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white, // Change text color to white
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 10.0,
-                                  color: Colors.black,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+Positioned(
+  top: 40, // Adjust top position as needed
+  left: 0,
+  right: 0,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Icon(
+        Icons.star,
+        color: Colors.white,
+        size: 20, // Adjust the size of the star icon
+      ),
+      const SizedBox(width: 5), // Add space between the star and the text
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '2+ millions',
+            style: GoogleFonts.poppins(
+              textStyle: const TextStyle(
+                fontSize: 18, // Adjust the font size
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Change text color to white
+              ),
+            ),
+          ),
+          Text(
+            'Premium Recipes',
+            style: GoogleFonts.poppins(
+              textStyle: const TextStyle(
+                fontSize: 14, // Adjust the font size
+                fontWeight: FontWeight.w300,
+                color: Colors.white, // Change text color to white
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black,
+                    offset: Offset(2, 2),
                   ),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    ],
+  ),
+),
           // Centered content
-          Center(
-            child: Container(
-              height: 100, // Adjust the height as needed
-              child: Text(
-                'What\'s for dinner tonight?',
-                style: GoogleFonts.poppins(
-                  textStyle: const TextStyle(
-                    fontSize: 33,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Change text color to white
-                    shadows: [
-                      Shadow(
-                        blurRadius: 10.0,
-                        color: Colors.black,
-                        offset: Offset(2, 2),
-                      ),
-                    ],
-                  ),
-                ),
-                textAlign: TextAlign.center, // Center text horizontally
+Center(
+  child: Container(
+    height: 100, // Adjust the height as needed
+    child: TypeWriterText(
+      text: Text(
+        'What\'s for dinner \n tonight?', // Add a newline before 'tonight'
+        style: GoogleFonts.poppins(
+          textStyle: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Change text color to white
+            shadows: [
+              Shadow(
+                blurRadius: 10.0,
+                color: Colors.black,
+                offset: Offset(2, 2),
               ),
-            ),
+            ],
           ),
+        ),
+        textAlign: TextAlign.center, // Center text horizontally
+      ),
+      duration: Duration(milliseconds: 75),
+    ),
+  ),
+),
           // Positioned button
           Positioned(
             bottom: 40, // Adjust bottom position as needed
