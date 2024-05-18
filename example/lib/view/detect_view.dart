@@ -8,9 +8,9 @@ import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 class DetectView extends ConsumerWidget {
   const DetectView(
     this._cameraController, {
-    Key? key,
-  }) : super(key: key);
-  
+    super.key,
+  });
+
   final UltralyticsYoloCameraController _cameraController;
 
   @override
@@ -29,10 +29,17 @@ class DetectView extends ConsumerWidget {
               if (snapshot.hasData) {
                 // Your logic for processing detection results
                 double confidenceThreshold = 0.6;
-                List<DetectedObject?> recipeList = snapshot.data!.where((object) => object!.confidence > confidenceThreshold).toList();
-                String listOfLabels = recipeList.map((object) => object!.label).join('+');
-                // Update GlobalVariables.listaNotifier
-                GlobalVariables.listaNotifier.value = listOfLabels;
+                List<DetectedObject?> recipeList = snapshot.data!
+                    .where((object) => object!.confidence > confidenceThreshold)
+                    .toList();
+                String listOfLabels = recipeList
+                    .map((object) => object!.label)
+                    .join('+');
+
+                // Update the label notifier in a future microtask
+                Future.microtask(() {
+                  ref.read(labelProvider.notifier).updateLabels(listOfLabels);
+                });
 
                 // Return UI based on detection results
                 return CustomPaint(
@@ -49,7 +56,8 @@ class DetectView extends ConsumerWidget {
           ),
         ],
       ),
-      error: (error, stackTrace) => const Center(child: Text('No detection model')),
+      error: (error, stackTrace) =>
+          const Center(child: Text('No detection model')),
       loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
