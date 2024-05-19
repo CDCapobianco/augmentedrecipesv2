@@ -5,7 +5,11 @@ import 'package:ultralytics_yolo_example/controller/api_controller.dart';
 import 'package:ultralytics_yolo_example/controller/permissions_controller.dart';
 import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 import 'package:ultralytics_yolo_example/view/detect_view.dart';
+import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
 
+
+/* TODO:
+  one tap,  tasto indietro e chiudi la camera quando esci dalla schermata*/
 class CameraView extends ConsumerStatefulWidget {
   const CameraView({Key? key}) : super(key: key);
 
@@ -39,24 +43,25 @@ class _CameraViewState extends ConsumerState<CameraView> {
       ),
     );
   }
+
 }
 
 class CameraButton extends ConsumerWidget {
   const CameraButton({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final labels = ref.watch(labelProvider);
     final hasPermissionsValue = ref.watch(permissionsControllerProvider);
 
+    print("LABELS:$labels");
     return Positioned(
       bottom: 20.0, // Adjust as needed
       child: hasPermissionsValue.when(
         data: (hasPermissions) {
           return GestureDetector(
-            onTap: labels.isNotEmpty
+            onTap: (labels.isNotEmpty)
                 ? () {
-                    // Replace with your actual API call logic
                     ApiManager.makeApiRequest(context, labels);
                   }
                 : null,
@@ -81,4 +86,25 @@ class CameraButton extends ConsumerWidget {
       ),
     );
   }
+
+
+
+  static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
+    
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.0, 1.0), // Slide from bottom to top
+            end: Offset.zero,
+          ).animate(animation),
+          child: ListRecipes(jsonResponse: jsonResponse),
+        );
+      },
+    ),
+  );
+}
 }

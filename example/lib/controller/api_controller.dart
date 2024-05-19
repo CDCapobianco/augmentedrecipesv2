@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
+import 'package:ultralytics_yolo_example/view/camera_view.dart';
 
 class ApiManager {
-  
-  ///_makeApiRequest permette di fare la chiamata remota all'api
-  ///andrà modificata inserendo una query di request contenente
-  ///gli ingredienti da ricercare separati dal''operatore '+'  di concatenazione
   static Future<void> makeApiRequest(BuildContext context, String queryLabel ) async {
     try {
       print('RICHIESTA API');
@@ -17,7 +13,7 @@ class ApiManager {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         //await file.writeAsString(response.body);
-        ListRecipes.buildListRecipes(context, jsonResponse);
+        CameraButton.buildListRecipes(context, jsonResponse);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
