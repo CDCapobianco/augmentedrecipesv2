@@ -13,7 +13,7 @@ class ApiManager {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         //await file.writeAsString(response.body);
-        CameraButton.buildListRecipes(context, jsonResponse);
+        CameraView.buildListRecipes(context, jsonResponse);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

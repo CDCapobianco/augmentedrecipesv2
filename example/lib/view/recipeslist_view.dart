@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,23 +12,6 @@ class ListRecipes extends StatefulWidget {
   @override
   _ListRecipesState createState() => _ListRecipesState();
 
-  static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 350),
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0.0, 1.0), // Slide from bottom to top
-              end: Offset.zero,
-            ).animate(animation),
-            child: ListRecipes(jsonResponse: jsonResponse),
-          );
-        },
-      ),
-    );
-  }
 }
 
 class _ListRecipesState extends State<ListRecipes> {
@@ -77,28 +59,34 @@ class _ListRecipesState extends State<ListRecipes> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Discover',
-          style: GoogleFonts.poppins(
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-            ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        'Discover',
+        style: GoogleFonts.poppins(
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        elevation: 0.0,
-        centerTitle: true,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _buildRecipeContent(context),
-    );
-  }
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      elevation: 0.0,
+      centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        onPressed: () {
+          Navigator.of(context).pop(); 
+        },
+      ),
+    ),
+    body: _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _buildRecipeContent(context),
+  );
+}
+
 
   Widget _buildRecipeContent(BuildContext context) {
     final List<dynamic> recipes = widget.jsonResponse['hits'].take(5).toList();
