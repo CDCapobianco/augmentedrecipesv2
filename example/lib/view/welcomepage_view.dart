@@ -116,7 +116,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, // Set text color to white
-                  backgroundColor: const Color.fromARGB(255, 0, 0, 0), // Set button color to red
+                  backgroundColor: const Color.fromARGB(255, 0, 0, 0), // Set button color to black
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Set button padding
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Set button border radius
                 ),
@@ -142,12 +142,22 @@ class _BackgroundVideoWidgetState extends State<BackgroundVideoWidget> {
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.asset('assets/food_clips/IntroMenu_Portrait.mp4')
-      ..initialize().then((_) {
-        _videoController.play();
-        _videoController.setLooping(true);
-        _videoController.setVolume(0.0);
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      final isPortrait = size.height > size.width;
+      final videoAsset = isPortrait
+          ? 'assets/food_clips/IntroMenu_Portrait.mp4'
+          : 'assets/food_clips/IntroMenu_Landscape.mp4';
+
+      _videoController = VideoPlayerController.asset(videoAsset)
+        ..initialize().then((_) {
+          setState(() {
+            _videoController.play();
+            _videoController.setLooping(true);
+            _videoController.setVolume(0.0);
+          });
+        });
+    });
   }
 
   @override
@@ -158,11 +168,14 @@ class _BackgroundVideoWidgetState extends State<BackgroundVideoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final videoSize = isPortrait ? Size(9.0, 16.0) : Size(16.0, 9.0);
+
     return FittedBox(
       fit: BoxFit.cover,
       child: SizedBox(
-        width: 9.0,
-        height: 16.0,
+        width: videoSize.width,
+        height: videoSize.height,
         child: VideoPlayer(_videoController),
       ),
     );
