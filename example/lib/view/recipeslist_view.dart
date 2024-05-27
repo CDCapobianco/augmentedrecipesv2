@@ -59,34 +59,40 @@ class _ListRecipesState extends State<ListRecipes> {
     super.dispose();
   }
 
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        'Discover',
-        style: GoogleFonts.poppins(
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isPortrait = size.height > size.width;
+
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(isPortrait ? 56.0 : 48.0), // Adjust height based on orientation
+        child: AppBar(
+          title: Text(
+            'Discover',
+            style: GoogleFonts.poppins(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          elevation: 0.0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.of(context).pop(); 
+            },
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      elevation: 0.0,
-      centerTitle: true,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.of(context).pop(); 
-        },
-      ),
-    ),
-    body: _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : _buildRecipeContent(context),
-  );
-}
-
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildRecipeContent(context),
+    );
+  }
 
   Widget _buildRecipeContent(BuildContext context) {
     final List<dynamic> recipes = widget.jsonResponse['hits'].take(5).toList();
@@ -146,8 +152,9 @@ Widget build(BuildContext context) {
 
   Widget _buildRecipeWidget(dynamic recipeData, BuildContext context) {
     final recipe = recipeData['recipe'];
-    final imageBoxWidth = MediaQuery.of(context).size.width / 1.35;
-    final imageBoxHeight = MediaQuery.of(context).size.height / 2.2;
+    final isPortrait = MediaQuery.of(context).size.height > MediaQuery.of(context).size.width;
+    final imageBoxWidth = MediaQuery.of(context).size.width / (isPortrait ? 1.35: 2.2);
+    final imageBoxHeight = MediaQuery.of(context).size.height / (isPortrait ? 2.2 : 1.35);
 
     return GestureDetector(
       onTap: () {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo_example/view/welcomepage_view.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 
 void main() {
   runApp(
@@ -12,12 +14,12 @@ void main() {
 }
 
 class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Recipe Viewer',
+      title: 'Augmented Recipes',
       debugShowCheckedModeBanner: false, // Remove debug banner
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -26,6 +28,3 @@ class MainPage extends StatelessWidget {
     );
   }
 }
-
-
-

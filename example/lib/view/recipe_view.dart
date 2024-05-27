@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
+import 'package:google_fonts/google_fonts.dart';
 
 class RecipeDetailsPage extends StatelessWidget {
   final dynamic recipeData;
@@ -11,6 +11,13 @@ class RecipeDetailsPage extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   final recipe = recipeData['recipe'];
+  final size = MediaQuery.of(context).size;
+  final isPortrait = size.height > size.width;
+
+  final imageSize = isPortrait ? size.width / 1.5 : size.width / 4; // identical
+  final labelTopPosition = isPortrait 
+    ? (size.height / 4) + (size.width / 1.5) - 50 
+    : (size.height / 4) + (size.width / 4); // Adjusted label position for landscape
 
   return Scaffold(
     backgroundColor: Color.fromARGB(0, 0, 0, 0), // Set Scaffold background to transparent
@@ -21,24 +28,25 @@ Widget build(BuildContext context) {
         children: [
           Column(
             children: [
-              const SizedBox(height: kToolbarHeight), // Space for top bar
+              SizedBox(height: (isPortrait ? kToolbarHeight : 0)), // Space for top bar
               Expanded(
-                child: _buildRecipeInfoBox(context, recipe), // Removed padding to make it full width
+                child: _buildRecipeInfoBox(context, recipe,isPortrait), // Removed padding to make it full width
               ),
             ],
           ),
           
-          Positioned(
-            top: MediaQuery.of(context).size.height / 6,
-            left: (MediaQuery.of(context).size.width - (MediaQuery.of(context).size.width / 1.5)) / 2, // Center the image horizontally
-            child: SizedBox(
-              height: MediaQuery.of(context).size.width / 1.5, // Set image height
-              width: MediaQuery.of(context).size.width / 1.5, // Set image width
-              child: _buildRecipeImage(recipe['image']),
+            Center(
+              heightFactor: 2,
+              child: Container(
+                child: SizedBox(
+                  height: imageSize, // Set image height
+                  width: imageSize, // Set image width
+                  child: _buildRecipeImage(recipe['image']),
+                ),
+              ),
             ),
-          ),
           Positioned(
-            top: (MediaQuery.of(context).size.height / 4) + (MediaQuery.of(context).size.width / 1.5) - 50,
+            top: labelTopPosition,
             left: 0,
             right: 0,
             child: Center(
@@ -62,13 +70,17 @@ Widget build(BuildContext context) {
 }
 
 
-Widget _buildRecipeInfoBox(BuildContext context, dynamic recipe) {
+Widget _buildRecipeInfoBox(BuildContext context, dynamic recipe, bool isPortrait) {
   double screenWidth = MediaQuery.of(context).size.width;
   double screenHeight = MediaQuery.of(context).size.height;
 
+  double containerWidth = isPortrait ? screenWidth : screenHeight;
+  double containerHeight = isPortrait ? screenHeight : screenWidth;
+
   return Container(
-    width: screenWidth,
-    margin: EdgeInsets.only(top: 32 + screenWidth / 4), // Top margin to align with image
+    width: containerWidth,
+    height: containerHeight / 1.5,
+    margin: EdgeInsets.only(top: 32 + (isPortrait ? screenWidth : screenHeight) / 4), // Top margin to align with image
     decoration: BoxDecoration(
       color: const Color.fromARGB(255, 255, 255, 255),
       borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
@@ -83,7 +95,7 @@ Widget _buildRecipeInfoBox(BuildContext context, dynamic recipe) {
     ),
     child: Container(
       margin: EdgeInsets.only(
-        top: screenHeight / 6 + screenWidth / 1.5 - 110, // Margin set just below the title
+        top: containerHeight / 6 + containerWidth / 1.5 - (isPortrait ? 110 : 350), // Margin set just below the title
       ),
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16), // Padding inside the inner container
       child: ListView(
