@@ -137,7 +137,7 @@ class BackgroundVideoWidget extends StatefulWidget {
 }
 
 class _BackgroundVideoWidgetState extends State<BackgroundVideoWidget> {
-  late final VideoPlayerController _videoController;
+  VideoPlayerController? _videoController;
 
   @override
   void initState() {
@@ -151,33 +151,37 @@ class _BackgroundVideoWidgetState extends State<BackgroundVideoWidget> {
 
       _videoController = VideoPlayerController.asset(videoAsset)
         ..initialize().then((_) {
-          setState(() {
-            _videoController.play();
-            _videoController.setLooping(true);
-            _videoController.setVolume(0.0);
-          });
+          if (mounted) {
+            setState(() {
+              _videoController!.play();
+              _videoController!.setLooping(true);
+              _videoController!.setVolume(0.0);
+            });
+          }
         });
     });
   }
 
   @override
   void dispose() {
-    _videoController.dispose(); // Dispose the video controller properly
+    _videoController?.dispose(); // Dispose the video controller properly
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    final videoSize = isPortrait ? Size(9.0, 16.0) : Size(16.0, 9.0);
+    final videoSize = isPortrait ? const Size(9.0, 16.0) : const Size(16.0, 9.0);
 
-    return FittedBox(
-      fit: BoxFit.cover,
-      child: SizedBox(
-        width: videoSize.width,
-        height: videoSize.height,
-        child: VideoPlayer(_videoController),
-      ),
-    );
+    return _videoController?.value.isInitialized ?? false
+        ? FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: videoSize.width,
+              height: videoSize.height,
+              child: VideoPlayer(_videoController!),
+            ),
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 }

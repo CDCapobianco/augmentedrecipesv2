@@ -1,94 +1,131 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:video_player/video_player.dart';
-
-class MockVideoPlayerController extends Mock implements VideoPlayerController {}
+import 'package:ultralytics_yolo_example/view/welcomepage_view.dart';
+import 'dart:async';
+import 'package:flutter/services.dart';
+// For unit test
+// ignore: depend_on_referenced_packages
+import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 void main() {
-  group('WelcomePage', () {
-    testWidgets('should dispose VideoPlayerController', (WidgetTester tester) async {
-      final mockController = MockVideoPlayerController();
+  setUp(() {
+    // Replace the VideoPlayerController with the mock version
+    VideoPlayerPlatform.instance = FakeVideoPlayerPlatform();
+  });
 
-      // Mock initialization and play to prevent actual video operations during testing
-      when(mockController.initialize()).thenAnswer((_) async => Future.value());
-      when(mockController.play()).thenAnswer((_) {
-        // Add a return statement here
-        return Future.value();
-      });
-      when(mockController.setLooping(true)).thenAnswer((_) async {});
-      when(mockController.setVolume(0.0)).thenAnswer((_) async {});
+  testWidgets('Get Started button is present', (WidgetTester tester) async {
+    // Build the widget tree
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
 
-      // Use a custom widget to inject the mock controller
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) {
-              return Scaffold(
-                body: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Background video widget with mock controller
-                    _BackgroundVideoWidget(controller: mockController),
-                    // Other widgets...
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      );
+    // Verify if the "Get Started" button is present
+    expect(find.byKey(const Key('getStartedButton')), findsOneWidget);
 
-      // Ensure the widget is fully built and video controller is initialized
-      await tester.pumpAndSettle();
-
-      // Dispose of the widget tree
-      await tester.pumpWidget(const SizedBox());
-
-      // Verify that dispose is called on the mocked controller
-      verify(mockController.dispose()).called(1);
-    });
+    // Ensure that all timers are complete before ending the test
+    await tester.pumpAndSettle(const Duration(seconds:5));
   });
 }
 
-class _BackgroundVideoWidget extends StatefulWidget {
-  final VideoPlayerController controller;
 
-  const _BackgroundVideoWidget({required this.controller});
+// Created from video_player package and video_player_test.dart file.
+class FakeVideoPlayerPlatform extends VideoPlayerPlatform {
+  final Completer<bool> initialized = Completer<bool>();
+  final List<String> calls = <String>[];
+  final List<DataSource> dataSources = <DataSource>[];
+  final Map<int, StreamController<VideoEvent>> streams =
+      <int, StreamController<VideoEvent>>{};
+  final bool forceInitError;
+  int nextTextureId = 0;
+  final Map<int, Duration> _positions = <int, Duration>{};
+
+  FakeVideoPlayerPlatform({
+    this.forceInitError = false,
+  });
 
   @override
-  State<_BackgroundVideoWidget> createState() => _BackgroundVideoWidgetState();
-}
-
-class _BackgroundVideoWidgetState extends State<_BackgroundVideoWidget> {
-  late final VideoPlayerController _videoController;
-
-  @override
-  void initState() {
-    super.initState();
-    _videoController = widget.controller;
-    _videoController.initialize().then((_) {
-      _videoController.play();
-      _videoController.setLooping(true);
-      _videoController.setVolume(0.0);
-    });
+  Future<int?> create(DataSource dataSource) async {
+    calls.add('create');
+    final StreamController<VideoEvent> stream = StreamController<VideoEvent>();
+    streams[nextTextureId] = stream;
+    if (forceInitError) {
+      stream.addError(
+        PlatformException(
+          code: 'VideoError',
+          message: 'Video player had error XYZ',
+        ),
+      );
+    } else {
+      stream.add(
+        VideoEvent(
+          eventType: VideoEventType.initialized,
+          size: const Size(100, 100),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+    dataSources.add(dataSource);
+    return nextTextureId++;
   }
 
   @override
-  void dispose() {
-    _videoController.dispose(); // Dispose the video controller properly
-    super.dispose();
+  Future<void> dispose(int textureId) async {
+    calls.add('dispose');
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.cover,
-      child: SizedBox(
-        width: 9.0,
-        height: 16.0,
-        child: VideoPlayer(_videoController),
-      ),
-    );
+  Future<void> init() async {
+    calls.add('init');
+    initialized.complete(true);
+  }
+
+  @override
+  Stream<VideoEvent> videoEventsFor(int textureId) {
+    return streams[textureId]!.stream;
+  }
+
+  @override
+  Future<void> pause(int textureId) async {
+    calls.add('pause');
+  }
+
+  @override
+  Future<void> play(int textureId) async {
+    calls.add('play');
+  }
+
+  @override
+  Future<Duration> getPosition(int textureId) async {
+    calls.add('position');
+    return _positions[textureId] ?? Duration.zero;
+  }
+
+  @override
+  Future<void> seekTo(int textureId, Duration position) async {
+    calls.add('seekTo');
+    _positions[textureId] = position;
+  }
+
+  @override
+  Future<void> setLooping(int textureId, bool looping) async {
+    calls.add('setLooping');
+  }
+
+  @override
+  Future<void> setVolume(int textureId, double volume) async {
+    calls.add('setVolume');
+  }
+
+  @override
+  Future<void> setPlaybackSpeed(int textureId, double speed) async {
+    calls.add('setPlaybackSpeed');
+  }
+
+  @override
+  Future<void> setMixWithOthers(bool mixWithOthers) async {
+    calls.add('setMixWithOthers');
+  }
+
+  @override
+  Widget buildView(int textureId) {
+    return Texture(textureId: textureId);
   }
 }
