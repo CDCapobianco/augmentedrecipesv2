@@ -14,7 +14,7 @@ class WelcomePage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // Background video widget
-          const BackgroundVideoWidget(),
+          const BackgroundVideoWidget(key: Key("backgroundVideo")),
           // Positioned text
           Positioned(
             top: 40, // Adjust top position as needed

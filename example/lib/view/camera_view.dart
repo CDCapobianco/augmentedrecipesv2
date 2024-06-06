@@ -35,12 +35,13 @@ class CameraView extends ConsumerStatefulWidget {
 class _CameraViewState extends ConsumerState<CameraView> {
   bool _cameraOn = true; // Define the _cameraOn variable
 
-  void _toggleCamera() {
+void _toggleCamera() {
+  if (mounted) {
     setState(() {
       _cameraOn = !_cameraOn;
     });
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

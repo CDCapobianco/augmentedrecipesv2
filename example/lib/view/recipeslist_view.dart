@@ -29,8 +29,9 @@ class _ListRecipesState extends State<ListRecipes> {
   Future<void> _preloadImages() async {
     final List<dynamic> recipes = widget.jsonResponse['hits'].take(5).toList();
     final List<String> imageUrls = recipes.map((recipe) => recipe['recipe']['image'] as String).toList();
-
-    await Future.wait(imageUrls.map((imageUrl) => _loadImage(imageUrl)));
+    if(!(imageUrls.last == 'test_mode')){
+      await Future.wait(imageUrls.map((imageUrl) => _loadImage(imageUrl)));
+    }
     
     setState(() {
       _isLoading = false;

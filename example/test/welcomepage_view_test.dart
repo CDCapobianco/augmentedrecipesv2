@@ -21,7 +21,41 @@ void main() {
     expect(find.byKey(const Key('getStartedButton')), findsOneWidget);
 
     // Ensure that all timers are complete before ending the test
-    await tester.pumpAndSettle(const Duration(seconds:5));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  });
+
+  testWidgets('Premium Recipes text is present', (WidgetTester tester) async {
+    // Build the widget tree
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
+
+    // Verify if the "2+ millions Premium Recipes" text is present
+    expect(find.text('2+ millions'), findsOneWidget);
+    expect(find.text('Premium Recipes'), findsOneWidget);
+
+    // Ensure that all timers are complete before ending the test
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  });
+
+  testWidgets('Typewriter text is present', (WidgetTester tester) async {
+    // Build the widget tree
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
+
+    // Verify if the typewriter text "What's for dinner tonight?" is present
+    expect(find.byKey(const Key('whatsForDinnerText')), findsOneWidget);
+
+    // Ensure that all timers are complete before ending the test
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  });
+
+  testWidgets('Video player is present', (WidgetTester tester) async {
+    // Build the widget tree
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
+
+    // Verify if the video player widget is present
+    expect(find.byKey(const Key('backgroundVideo')), findsOneWidget);
+
+    // Ensure that all timers are complete before ending the test
+    await tester.pumpAndSettle(const Duration(seconds: 5));
   });
 }
 
