@@ -8,7 +8,7 @@ import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class CameraView extends ConsumerStatefulWidget {
-  const CameraView({Key? key}) : super(key: key);
+  const CameraView({super.key});
 
   @override
   ConsumerState<CameraView> createState() => _CameraViewState();
@@ -51,7 +51,7 @@ void _toggleCamera() {
           alignment: Alignment.center,
           children: [
             VisibilityDetector(
-              key: Key('camera-view-key'),
+              key: const Key('camera-view-key'),
               onVisibilityChanged: (VisibilityInfo info) {
                 if (info.visibleFraction > 0.0 && !_cameraOn) {
                   _toggleCamera();
@@ -59,8 +59,8 @@ void _toggleCamera() {
                   _toggleCamera();
                 }
               },
-              child: _cameraOn ? DetectView() : Center(
-                child: Container(
+              child: _cameraOn ? const DetectView() : const Center(
+                child: SizedBox(
                   width: 60.0,
                   height: 60.0,
                   child: CircularProgressIndicator(),
@@ -83,10 +83,10 @@ class CameraButton extends ConsumerWidget {
   final bool cameraOn; 
 
   const CameraButton({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.cameraOn,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,7 +125,7 @@ class CameraButton extends ConsumerWidget {
             ),
           );
         },
-        error: (error, stackTrace) => const Center(key: const Key("cameraview_error"),child: Text('No permissions')),
+        error: (error, stackTrace) => const Center(key: Key("cameraview_error"),child: Text('No permissions')),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

@@ -6,7 +6,7 @@ import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 
 
 class DetectView extends ConsumerWidget {
-  DetectView({Key? key}) : super(key: key); 
+  const DetectView({super.key}); 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +29,6 @@ class DetectView extends ConsumerWidget {
                 String listOfLabels = recipeList
                     .map((object) => object!.label)
                     .join('+');
-                print("LABELS:$listOfLabels");
 
                 Future.microtask(() {
                   ref.read(labelProvider.notifier).updateLabels(listOfLabels);

@@ -6,21 +6,17 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultralytics_yolo_example/controller/api_controller.dart';
 import 'package:ultralytics_yolo_example/controller/permissions_controller.dart';
-import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 import 'package:ultralytics_yolo_example/view/camera_view.dart';
 import 'package:ultralytics_yolo_example/view/detect_view.dart';
 import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:http/http.dart' as http;
 
 class MockApiManager extends Mock implements ApiManager {}
 @GenerateMocks([ApiManager])
 
 void main() {
-  late MockApiManager mockApiManager;
 
   setUp(() {
-    mockApiManager = MockApiManager();
   });
   testWidgets('CameraView initial state', (WidgetTester tester) async {
     // Initialize VisibilityDetector
@@ -121,12 +117,11 @@ final jsonResponse = {
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
     // Mock the providers
-    final mockPermissionsProvider = Provider((ref) => AsyncValue.data(true));
 
     // Build the widget tree
     await tester.pumpWidget(
-      ProviderScope(
-        child: const MaterialApp(home: CameraView()),
+      const ProviderScope(
+        child: MaterialApp(home: CameraView()),
       ),
     );
 
@@ -135,8 +130,8 @@ final jsonResponse = {
 
     // Simulate permissions error
     await tester.pumpWidget(
-      ProviderScope(
-        child: const MaterialApp(home: CameraView()),
+      const ProviderScope(
+        child: MaterialApp(home: CameraView()),
       ),
     );
 
@@ -187,7 +182,7 @@ final jsonResponse = {
       matching: find.byType(Icon),
     ));
     expect(iconWidget.icon, Icons.camera_alt);
-    expect(iconWidget.color, Color.fromARGB(255, 0, 0, 0));
+    expect(iconWidget.color, const Color.fromARGB(255, 0, 0, 0));
   });
 
 }

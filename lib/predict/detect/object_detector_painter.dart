@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, lines_longer_than_80_chars, use_named_constants
+
 import 'dart:math';
 import 'dart:ui' as ui;
 
@@ -22,6 +24,7 @@ class ObjectDetectorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // ignore: unused_local_variable
     final colors = _colors ?? Colors.primaries;
 
     for (final detectedObject in _detectionResults) {
@@ -39,7 +42,6 @@ class ObjectDetectorPainter extends CustomPainter {
           width.isNaN ||
           height.isNaN) return;
 
-      final opacity = (detectedObject.confidence - 0.2) / (1.0 - 0.2) * 0.9;
 
       // Calculate center coordinates of the bounding box
       final centerX = left + width / 2;
@@ -61,19 +63,19 @@ class ObjectDetectorPainter extends CustomPainter {
 
       final imageProvider = AssetImage(imagePath);
 
-      canvas.drawCircle(
+      canvas..drawCircle(
         Offset(centerX, centerY),
         imageBorderRadius,
         imageBorderPaint,
-      );
+      )
 
-      canvas.save();
-      canvas.clipPath(Path()
-        ..addOval(Rect.fromCircle(center: Offset(centerX, centerY), radius: imageBorderRadius)));
+      ..save()
+      ..clipPath(Path()
+        ..addOval(Rect.fromCircle(center: Offset(centerX, centerY), radius: imageBorderRadius)),);
       imageProvider.resolve(const ImageConfiguration()).addListener(
         ImageStreamListener(
           (ImageInfo imageInfo, bool synchronousCall) {
-            final Rect rect = Rect.fromLTWH(
+            final rect = Rect.fromLTWH(
               imageX,
               imageY,
               imageSize,
@@ -113,7 +115,6 @@ class ObjectDetectorPainter extends CustomPainter {
       final labelParagraph = labelBuilder.build()..layout(ui.ParagraphConstraints(width: width));
 
       // Adjust vertical position of the label
-      final labelX = left;
       final labelY = max(0, centerY + imageSize / 2); // Adjust as needed
 
       canvas.drawParagraph(

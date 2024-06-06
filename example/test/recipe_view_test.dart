@@ -81,8 +81,8 @@ void main() {
   });
   group('RecipeDetailsPage Unit Tests', () {
     test('CO2 Emissions calculation', () {
-      final totalCO2Emissions = 2000.0;
-      final totalWeight = 500.0;
+      const totalCO2Emissions = 2000.0;
+      const totalWeight = 500.0;
       final emissionsPer100g =
           (totalCO2Emissions * 100 / totalWeight).round().toDouble();
 
@@ -101,7 +101,7 @@ void main() {
         'NIA': {'quantity': 0.0},
         'VITB6A': {'quantity': 0.0}
       };
-      final totalWeight = 100.0;
+      const totalWeight = 100.0;
       final double carbo =
           nutrients['CHOCDF']!['quantity']! * 100 / totalWeight;
       final double protein =

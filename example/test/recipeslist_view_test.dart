@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mockito/mockito.dart';
 import 'package:ultralytics_yolo_example/view/recipe_view.dart';
 import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
@@ -66,7 +64,7 @@ class MockJsonResponse {
 void main() {
   testWidgets('ListRecipes shows loading indicator', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),
       ),
     );
@@ -75,7 +73,7 @@ void main() {
 
   testWidgets('ListRecipes displays recipes correctly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),
       ),
     );
@@ -89,7 +87,7 @@ void main() {
   });
 testWidgets('_buildRecipeWidget creates a recipe widget correctly', (WidgetTester tester) async {
   await tester.pumpWidget(
-    MaterialApp(
+    const MaterialApp(
       home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),
     ),
   );
@@ -110,11 +108,11 @@ testWidgets('_buildRecipeWidget creates a recipe widget correctly', (WidgetTeste
     expect(containerDecorations, findsOneWidget);
 
     // Verify that the recipe detail is present
-    expect(find.byKey(Key("recipeslist_health_score")), findsOneWidget);
+    expect(find.byKey(const Key("recipeslist_health_score")), findsOneWidget);
 });
 testWidgets('modalsheets works', (WidgetTester tester) async {
   await tester.pumpWidget(
-    MaterialApp(
+    const MaterialApp(
       home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),
     ),
   );

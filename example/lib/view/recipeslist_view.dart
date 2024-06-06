@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ class ListRecipes extends StatefulWidget {
   
   final bool test;
 
-  const ListRecipes({Key? key, required this.jsonResponse, required this.test}) : super(key: key);
+  const ListRecipes({super.key, required this.jsonResponse, required this.test});
 
   @override
   _ListRecipesState createState() => _ListRecipesState();
@@ -297,7 +299,7 @@ class _ListRecipesState extends State<ListRecipes> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(key: Key('recipeslist_health_score'),
+            Text(key: const Key('recipeslist_health_score'),
               emojiLabel,
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: healthScoreColor),

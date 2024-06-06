@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:mockito/mockito.dart';
 import 'package:ultralytics_yolo_example/controller/api_controller.dart';
-import 'package:ultralytics_yolo_example/view/camera_view.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
@@ -54,7 +53,7 @@ void main() {
                 onPressed: () async {
                   await ApiManager.makeApiRequest(context, 'test_query');
                 },
-                child: Text('Make API Request'),
+                child: const Text('Make API Request'),
               );
             },
           ),
@@ -80,7 +79,7 @@ void main() {
                 onPressed: () async {
                   await ApiManager.makeApiRequest(context, 'invalid_query');
                 },
-                child: Text('Make API Request'),
+                child: const Text('Make API Request'),
               );
             },
           ),
@@ -113,7 +112,7 @@ void main() {
                 onPressed: () async {
                   await ApiManager.makeApiRequest(context, 'test_query');
                 },
-                child: Text('Make API Request'),
+                child: const Text('Make API Request'),
               );
             },
           ),
@@ -126,6 +125,6 @@ void main() {
 
     // Verify that a SnackBar with the JSON error message is shown
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.byKey(Key('api_controller_json_error')), findsOneWidget);
+    expect(find.byKey(const Key('api_controller_json_error')), findsOneWidget);
   });
 }

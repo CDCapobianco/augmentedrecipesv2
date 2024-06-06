@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class RecipeDetailsPage extends StatelessWidget {
   final dynamic recipeData;
 
-  const RecipeDetailsPage({Key? key, required this.recipeData}) : super(key: key);
+  const RecipeDetailsPage({super.key, required this.recipeData});
 
 @override
 Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ Widget build(BuildContext context) {
     : (size.height / 4) + (size.width / 4); // Adjusted label position for landscape
 
   return Scaffold(
-    backgroundColor: Color.fromARGB(0, 0, 0, 0), // Set Scaffold background to transparent
+    backgroundColor: const Color.fromARGB(0, 0, 0, 0), // Set Scaffold background to transparent
     extendBodyBehindAppBar: true, // Extend the body behind the AppBar
     body: Container(
       color: Colors.transparent, // Set Container background to transparent
@@ -37,12 +37,10 @@ Widget build(BuildContext context) {
           
             Center(
               heightFactor: 2,
-              child: Container(
-                child: SizedBox(
-                  height: imageSize, // Set image height
-                  width: imageSize, // Set image width
-                  child: _buildRecipeImage(recipe['image']),
-                ),
+              child: SizedBox(
+                height: imageSize, // Set image height
+                width: imageSize, // Set image width
+                child: _buildRecipeImage(recipe['image']),
               ),
             ),
           Positioned(
@@ -284,27 +282,6 @@ Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
   );
 }
 
-  Widget _buildHealthinessItem(String nutrient, double percentage, bool isGood) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          nutrient,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${percentage.toStringAsFixed(0)}%',
-          style: TextStyle(
-            color: isGood ? Colors.green : Colors.red,
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildButtons(String url, String label) {
     return Column(
@@ -320,7 +297,7 @@ Widget _buildHealthiness(Map<String, dynamic> nutrients, double totalWeight) {
         CustomButton(
           text: 'Search on GialloZafferano',
           onPressed: () {
-            _launchURL('https://www.giallozafferano.it/ricerca-ricette/'+Uri.encodeComponent(label));
+            _launchURL('https://www.giallozafferano.it/ricerca-ricette/${Uri.encodeComponent(label)}');
           },
         ),
       ],
@@ -338,7 +315,7 @@ class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const CustomButton({
+  const CustomButton({super.key, 
     required this.text,
     required this.onPressed,
   });
@@ -384,7 +361,7 @@ class HealthBar extends StatelessWidget {
   final bool sugarGood;
   final bool vitaminsGood;
 
-  HealthBar({
+  const HealthBar({super.key, 
     required this.score,
     required this.proteinGood,
     required this.carbGood,

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -9,7 +11,6 @@ class ApiManager {
 
   static Future<void> makeApiRequest(BuildContext context, String queryLabel) async {
     try {
-      print('RICHIESTA API');
       final response = await client.get(Uri.parse(
         'https://api.edamam.com/api/recipes/v2?type=public&q=$queryLabel&app_id=c5fdcbaf&app_key=79089b3e02ca51e14bb5801915134401'));
       
@@ -27,7 +28,7 @@ class ApiManager {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(key:Key('api_controller_json_error'),'Errore durante la verifica del file JSON: $e'),
+          content: Text(key:const Key('api_controller_json_error'),'Errore durante la verifica del file JSON: $e'),
         ),
       );
     }

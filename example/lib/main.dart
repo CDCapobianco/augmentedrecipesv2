@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultralytics_yolo_example/view/welcomepage_view.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_device_type/flutter_device_type.dart';
 
 void main() {
   runApp(
