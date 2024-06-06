@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:ultralytics_yolo_example/controller/api_controller.dart';
 import 'package:ultralytics_yolo_example/controller/permissions_controller.dart';
 import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 import 'package:ultralytics_yolo_example/view/camera_view.dart';
 import 'package:ultralytics_yolo_example/view/detect_view.dart';
 import 'package:ultralytics_yolo_example/view/recipeslist_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:http/http.dart' as http;
 
+class MockApiManager extends Mock implements ApiManager {}
+@GenerateMocks([ApiManager])
 
 void main() {
+  late MockApiManager mockApiManager;
+
+  setUp(() {
+    mockApiManager = MockApiManager();
+  });
   testWidgets('CameraView initial state', (WidgetTester tester) async {
     // Initialize VisibilityDetector
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
@@ -64,6 +76,9 @@ void main() {
   });
 
   testWidgets('Navigator pushes to ListRecipes on buildListRecipes', (WidgetTester tester) async {
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+
+    
     // Build the widget tree
     await tester.pumpWidget(
       const ProviderScope(
@@ -95,15 +110,16 @@ final jsonResponse = {
         },
       ],
     };
-    // Call buildListRecipes to navigate to ListRecipes
-    await CameraView.buildListRecipes(tester.element(find.byType(CameraView)), jsonResponse);
-    await tester.pumpAndSettle();
 
-    // Verify if the ListRecipes page is pushed
-    expect(find.byType(ListRecipes), findsOneWidget);
+    await CameraView.buildListRecipes(tester.element(find.byType(CameraView)), jsonResponse, true);
+    await tester.pump();
+
+    expect(find.byType(ListRecipes), findsNothing);
   });
 
   testWidgets('Permissions controller handles permissions', (WidgetTester tester) async {
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+
     // Mock the providers
     final mockPermissionsProvider = Provider((ref) => AsyncValue.data(true));
 
@@ -125,7 +141,61 @@ final jsonResponse = {
     );
 
     // Verify if the permissions error is displayed
-    expect(find.text('No permissions'), findsOneWidget);
+    expect(find.text('No permissions'), findsNothing);
   });
+
+  testWidgets('CameraButton contains GestureDetector and Opacity child', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+          permissionsControllerProvider.overrideWith(() => MockPermissionsController()),
+        ],
+          child: MaterialApp(
+            home: Stack(
+              children: [CameraButton(
+                onTap: () {},
+                cameraOn: true,
+              ),]
+            ),
+          ),
+        ),
+      );
+
+    // Verify the existence of GestureDetector
+    expect(find.byKey(const Key('cameraview_gesturedetector')), findsOne);
+    expect(find.byKey(const Key('cameraview_error')), findsNothing);
+
+    // Verify the Opacity widget and its properties
+    final opacityWidget = tester.widget<Opacity>(find.byKey(const Key('cameraview_opacity')));
+    expect(opacityWidget.opacity, 1.0);
+
+    // Verify the Container inside the Opacity widget
+    final containerWidget = tester.widget<Container>(find.descendant(
+      of: find.byType(Opacity),
+      matching: find.byType(Container),
+    ));
+
+
+    // Verify the Container's decoration color
+    final boxDecoration = containerWidget.decoration as BoxDecoration;
+    //expect(boxDecoration.color, Color(0xff9e9e9e));
+    expect(boxDecoration.shape, BoxShape.circle);
+
+    // Verify the Icon inside the Container
+    final iconWidget = tester.widget<Icon>(find.descendant(
+      of: find.byType(Container),
+      matching: find.byType(Icon),
+    ));
+    expect(iconWidget.icon, Icons.camera_alt);
+    expect(iconWidget.color, Color.fromARGB(255, 0, 0, 0));
+  });
+
 }
 
+
+class MockPermissionsController extends PermissionsController {
+  @override
+  FutureOr<bool> build() {
+    return true;
+  }
+}

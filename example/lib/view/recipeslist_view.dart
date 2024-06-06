@@ -6,8 +6,10 @@ import 'package:ultralytics_yolo_example/view/recipe_view.dart';
 
 class ListRecipes extends StatefulWidget {
   final dynamic jsonResponse;
+  
+  final bool test;
 
-  const ListRecipes({Key? key, required this.jsonResponse}) : super(key: key);
+  const ListRecipes({Key? key, required this.jsonResponse, required this.test}) : super(key: key);
 
   @override
   _ListRecipesState createState() => _ListRecipesState();
@@ -18,18 +20,20 @@ class _ListRecipesState extends State<ListRecipes> {
   late PageController _pageController;
   int _currentPageIndex = 0;
   bool _isLoading = true;
-
+  
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentPageIndex);
-    _preloadImages();
+    if (widget.test == false) {
+      _preloadImages();
+    }
   }
 
   Future<void> _preloadImages() async {
     final List<dynamic> recipes = widget.jsonResponse['hits'].take(5).toList();
     final List<String> imageUrls = recipes.map((recipe) => recipe['recipe']['image'] as String).toList();
-    if(!(imageUrls.last == 'test_mode')){
+    if(widget.test == false){
       await Future.wait(imageUrls.map((imageUrl) => _loadImage(imageUrl)));
     }
     
@@ -67,7 +71,7 @@ class _ListRecipesState extends State<ListRecipes> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(isPortrait ? 56.0 : 48.0), // Adjust height based on orientation
+        preferredSize: Size.fromHeight(isPortrait ? 56.0 : 48.0), 
         child: AppBar(
           title: Text(
             'Discover',
@@ -89,12 +93,11 @@ class _ListRecipesState extends State<ListRecipes> {
           ),
         ),
       ),
-      body: _isLoading
+      body: (_isLoading && !widget.test)
           ? const Center(child: CircularProgressIndicator())
           : _buildRecipeContent(context),
     );
   }
-
   Widget _buildRecipeContent(BuildContext context) {
     final List<dynamic> recipes = widget.jsonResponse['hits'].take(5).toList();
     final double dotsTopPosition = MediaQuery.of(context).size.height / 4 * 0.8;
@@ -183,7 +186,7 @@ class _ListRecipesState extends State<ListRecipes> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
+                  widget.test ? Container() : Image.network(
                     recipe['image'],
                     fit: BoxFit.cover,
                   ),
@@ -294,7 +297,7 @@ class _ListRecipesState extends State<ListRecipes> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            Text(key: Key('recipeslist_health_score'),
               emojiLabel,
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: healthScoreColor),

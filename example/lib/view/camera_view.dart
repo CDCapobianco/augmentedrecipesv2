@@ -13,7 +13,7 @@ class CameraView extends ConsumerStatefulWidget {
   @override
   ConsumerState<CameraView> createState() => _CameraViewState();
 
-    static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse) async {
+    static Future<void> buildListRecipes(BuildContext context, dynamic jsonResponse, bool test) async {
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -24,7 +24,7 @@ class CameraView extends ConsumerStatefulWidget {
               begin: const Offset(0.0, 1.0), // Slide from bottom to top
               end: Offset.zero,
             ).animate(animation),
-            child: ListRecipes(jsonResponse: jsonResponse),
+            child: ListRecipes(jsonResponse: jsonResponse, test: test,),
           );
         },
       ),
@@ -79,8 +79,8 @@ void _toggleCamera() {
 }
 
 class CameraButton extends ConsumerWidget {
-  final VoidCallback onTap; // Define the onTap callback
-  final bool cameraOn; // Camera state to control opacity
+  final VoidCallback onTap;
+  final bool cameraOn; 
 
   const CameraButton({
     Key? key,
@@ -94,18 +94,20 @@ class CameraButton extends ConsumerWidget {
     final hasPermissionsValue = ref.watch(permissionsControllerProvider);
 
     return Positioned(
-      bottom: 20.0, // Adjust as needed
+      bottom: 20.0,
       child: hasPermissionsValue.when(
         data: (hasPermissions) {
           return GestureDetector(
             onTap: () {
               if (labels.isNotEmpty) {
                 ApiManager.makeApiRequest(context, labels);
-                onTap(); // Call the callback to toggle the camera
+                onTap();
               }
             },
+            key: const Key('cameraview_gesturedetector'),
             child: Opacity(
-              opacity: cameraOn ? 1.0 : 0.0, // Show or hide based on cameraOn
+              key: const Key('cameraview_opacity'),
+              opacity: cameraOn ? 1.0 : 0.0, 
               child: Container(
                 width: 60.0,
                 height: 60.0,
@@ -115,7 +117,7 @@ class CameraButton extends ConsumerWidget {
                 ),
                 child: const Center(
                   child: Icon(
-                    Icons.camera_alt, // Icon for capturing a picture
+                    Icons.camera_alt,
                     color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
@@ -123,7 +125,7 @@ class CameraButton extends ConsumerWidget {
             ),
           );
         },
-        error: (error, stackTrace) => const Center(child: Text('No permissions')),
+        error: (error, stackTrace) => const Center(key: const Key("cameraview_error"),child: Text('No permissions')),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

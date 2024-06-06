@@ -6,7 +6,7 @@ import 'package:ultralytics_yolo_example/utils/query_provider.dart';
 
 
 class DetectView extends ConsumerWidget {
-  DetectView({Key? key}) : super(key: key); // Modify the constructor
+  DetectView({Key? key}) : super(key: key); 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +22,6 @@ class DetectView extends ConsumerWidget {
             stream: objectDetector.detectionResultStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                // Your logic for processing detection results
                 double confidenceThreshold = 0.8;
                 List<DetectedObject?> recipeList = snapshot.data!
                     .where((object) => object!.confidence > confidenceThreshold)
@@ -31,12 +30,11 @@ class DetectView extends ConsumerWidget {
                     .map((object) => object!.label)
                     .join('+');
                 print("LABELS:$listOfLabels");
-                // Update the label notifier in a future microtask
+
                 Future.microtask(() {
                   ref.read(labelProvider.notifier).updateLabels(listOfLabels);
                 });
 
-                // Return UI based on detection results
                 return CustomPaint(
                   painter: ObjectDetectorPainter(
                     recipeList as List<DetectedObject>,
@@ -45,7 +43,7 @@ class DetectView extends ConsumerWidget {
                   ),
                 );
               }
-              // Return loading indicator or empty container if no data
+
               return Container();
             },
           ),
@@ -55,10 +53,5 @@ class DetectView extends ConsumerWidget {
           const Center(child: Text('No detection model')),
       loading: () => const Center(child: CircularProgressIndicator()),
     );
-  }
-
-  void pauseDetection(){
-    print("PAUSE LIVE DETECTION");
-    //_cameraController.pauseLivePrediction();
   }
 }
