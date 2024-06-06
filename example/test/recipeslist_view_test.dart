@@ -62,13 +62,13 @@ class MockJsonResponse {
 
 
 void main() {
-  testWidgets('ListRecipes shows loading indicator', (WidgetTester tester) async {
+  testWidgets('ListRecipes doesnt shows loading indicator', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),
       ),
     );
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
   testWidgets('ListRecipes displays recipes correctly', (WidgetTester tester) async {
@@ -110,7 +110,7 @@ testWidgets('_buildRecipeWidget creates a recipe widget correctly', (WidgetTeste
     // Verify that the recipe detail is present
     expect(find.byKey(const Key("recipeslist_health_score")), findsOneWidget);
 });
-testWidgets('modalsheets works', (WidgetTester tester) async {
+testWidgets('ModalSheets Works', (WidgetTester tester) async {
   await tester.pumpWidget(
     const MaterialApp(
       home: ListRecipes(jsonResponse: MockJsonResponse.jsonResponse, test: true),

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2024-06-06 20:33:16</td>
+            <td class="headerValue">2024-06-06 22:05:14</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -73,13 +73,13 @@
 <span id="L11"><span class="lineNum">      11</span>              : </span>
 <span id="L12"><span class="lineNum">      12</span>              : @riverpod</span>
 <span id="L13"><span class="lineNum">      13</span>              : class ObjectDetector extends _$ObjectDetector {</span>
-<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC tlaBgGNC">           3 :   @override</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC tlaBgGNC">           2 :   @override</span></span>
 <span id="L15"><span class="lineNum">      15</span>              :   FutureOr&lt;detector.ObjectDetector&gt; build() {</span>
-<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">           3 :     return _initObjectDetectorWithLocalModel();</span></span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">           2 :     return _initObjectDetectorWithLocalModel();</span></span>
 <span id="L17"><span class="lineNum">      17</span>              :   }</span>
 <span id="L18"><span class="lineNum">      18</span>              : </span>
-<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">           3 :   Future&lt;detector.ObjectDetector&gt; _initObjectDetectorWithLocalModel() async {</span></span>
-<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">           3 :     if (Platform.isAndroid) {</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">           2 :   Future&lt;detector.ObjectDetector&gt; _initObjectDetectorWithLocalModel() async {</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">           2 :     if (Platform.isAndroid) {</span></span>
 <span id="L21"><span class="lineNum">      21</span> <span class="tlaUNC tlaBgUNC">           0 :       final modelPath = await _copy('assets/yolov8n_int8.tflite');</span></span>
 <span id="L22"><span class="lineNum">      22</span> <span class="tlaUNC">           0 :       final metadataPath = await _copy('assets/metadata.yaml');</span></span>
 <span id="L23"><span class="lineNum">      23</span> <span class="tlaUNC">           0 :       final model = LocalYoloModel(</span></span>
@@ -95,7 +95,7 @@
 <span id="L33"><span class="lineNum">      33</span> <span class="tlaUNC">           0 :       await objectDetector.loadModel();</span></span>
 <span id="L34"><span class="lineNum">      34</span>              : </span>
 <span id="L35"><span class="lineNum">      35</span>              :       return objectDetector;</span>
-<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC tlaBgGNC">           3 :     } else if (Platform.isIOS) {</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC tlaBgGNC">           2 :     } else if (Platform.isIOS) {</span></span>
 <span id="L37"><span class="lineNum">      37</span> <span class="tlaUNC tlaBgUNC">           0 :       final modelPath = await _copy('assets/yolov8n.mlmodel');</span></span>
 <span id="L38"><span class="lineNum">      38</span> <span class="tlaUNC">           0 :       final model = LocalYoloModel(</span></span>
 <span id="L39"><span class="lineNum">      39</span>              :         id: '',</span>
@@ -110,7 +110,7 @@
 <span id="L48"><span class="lineNum">      48</span>              : </span>
 <span id="L49"><span class="lineNum">      49</span>              :       return objectDetector;</span>
 <span id="L50"><span class="lineNum">      50</span>              :     } else {</span>
-<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC tlaBgGNC">           3 :       throw Exception('Platform not supported');</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC tlaBgGNC">           2 :       throw Exception('Platform not supported');</span></span>
 <span id="L52"><span class="lineNum">      52</span>              :     }</span>
 <span id="L53"><span class="lineNum">      53</span>              :   }</span>
 <span id="L54"><span class="lineNum">      54</span>              : </span>

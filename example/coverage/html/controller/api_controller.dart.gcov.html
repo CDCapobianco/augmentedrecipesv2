@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
-            <td class="headerCovTableEntry">14</td>
-            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">13</td>
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2024-06-06 20:33:16</td>
+            <td class="headerValue">2024-06-06 22:09:17</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -60,41 +60,42 @@
               <td>
 <pre class="sourceHeading">            Line data    Source code</pre>
 <pre class="source">
-<span id="L1"><span class="lineNum">       1</span>              : import 'package:flutter/material.dart';</span>
-<span id="L2"><span class="lineNum">       2</span>              : import 'package:http/http.dart' as http;</span>
-<span id="L3"><span class="lineNum">       3</span>              : import 'dart:convert';</span>
-<span id="L4"><span class="lineNum">       4</span>              : import 'package:ultralytics_yolo_example/view/camera_view.dart';</span>
-<span id="L5"><span class="lineNum">       5</span>              : </span>
-<span id="L6"><span class="lineNum">       6</span>              : class ApiManager {</span>
-<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC tlaBgGNC">           1 :   static http.Client client = http.Client();</span></span>
-<span id="L8"><span class="lineNum">       8</span>              :   static bool test = false;</span>
-<span id="L9"><span class="lineNum">       9</span>              : </span>
-<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">           1 :   static Future&lt;void&gt; makeApiRequest(BuildContext context, String queryLabel) async {</span></span>
-<span id="L11"><span class="lineNum">      11</span>              :     try {</span>
-<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           1 :       print('RICHIESTA API');</span></span>
-<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">           3 :       final response = await client.get(Uri.parse(</span></span>
-<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           1 :         'https://api.edamam.com/api/recipes/v2?type=public&amp;q=$queryLabel&amp;app_id=c5fdcbaf&amp;app_key=79089b3e02ca51e14bb5801915134401'));</span></span>
-<span id="L15"><span class="lineNum">      15</span>              :       </span>
-<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">           2 :       if (response.statusCode == 200) {</span></span>
-<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           2 :         final jsonResponse = json.decode(response.body);</span></span>
-<span id="L18"><span class="lineNum">      18</span>              :         //await file.writeAsString(response.body);</span>
-<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">           1 :         CameraView.buildListRecipes(context, jsonResponse, test);</span></span>
-<span id="L20"><span class="lineNum">      20</span>              :       } else {</span>
-<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">           2 :         ScaffoldMessenger.of(context).showSnackBar(</span></span>
-<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           1 :           SnackBar(</span></span>
-<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           3 :             content: Text('Errore durante la richiesta all\'API: ${response.statusCode}'),</span></span>
-<span id="L24"><span class="lineNum">      24</span>              :           ),</span>
-<span id="L25"><span class="lineNum">      25</span>              :         );</span>
-<span id="L26"><span class="lineNum">      26</span>              :       }</span>
-<span id="L27"><span class="lineNum">      27</span>              :     } catch (e) {</span>
-<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">           2 :       ScaffoldMessenger.of(context).showSnackBar(</span></span>
-<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">           1 :         SnackBar(</span></span>
-<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">           3 :           content: Text(key:Key('api_controller_json_error'),'Errore durante la verifica del file JSON: $e'),</span></span>
-<span id="L31"><span class="lineNum">      31</span>              :         ),</span>
-<span id="L32"><span class="lineNum">      32</span>              :       );</span>
-<span id="L33"><span class="lineNum">      33</span>              :     }</span>
-<span id="L34"><span class="lineNum">      34</span>              :   }</span>
-<span id="L35"><span class="lineNum">      35</span>              : }</span>
+<span id="L1"><span class="lineNum">       1</span>              : // ignore_for_file: use_build_context_synchronously</span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : import 'package:flutter/material.dart';</span>
+<span id="L4"><span class="lineNum">       4</span>              : import 'package:http/http.dart' as http;</span>
+<span id="L5"><span class="lineNum">       5</span>              : import 'dart:convert';</span>
+<span id="L6"><span class="lineNum">       6</span>              : import 'package:ultralytics_yolo_example/view/camera_view.dart';</span>
+<span id="L7"><span class="lineNum">       7</span>              : </span>
+<span id="L8"><span class="lineNum">       8</span>              : class ApiManager {</span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC tlaBgGNC">           1 :   static http.Client client = http.Client();</span></span>
+<span id="L10"><span class="lineNum">      10</span>              :   static bool test = false;</span>
+<span id="L11"><span class="lineNum">      11</span>              : </span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           1 :   static Future&lt;void&gt; makeApiRequest(BuildContext context, String queryLabel) async {</span></span>
+<span id="L13"><span class="lineNum">      13</span>              :     try {</span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           3 :       final response = await client.get(Uri.parse(</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">           1 :         'https://api.edamam.com/api/recipes/v2?type=public&amp;q=$queryLabel&amp;app_id=c5fdcbaf&amp;app_key=79089b3e02ca51e14bb5801915134401'));</span></span>
+<span id="L16"><span class="lineNum">      16</span>              :       </span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           2 :       if (response.statusCode == 200) {</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">           2 :         final jsonResponse = json.decode(response.body);</span></span>
+<span id="L19"><span class="lineNum">      19</span>              :         //await file.writeAsString(response.body);</span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">           1 :         CameraView.buildListRecipes(context, jsonResponse, test);</span></span>
+<span id="L21"><span class="lineNum">      21</span>              :       } else {</span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           2 :         ScaffoldMessenger.of(context).showSnackBar(</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           1 :           SnackBar(</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">           3 :             content: Text('Errore durante la richiesta all\'API: ${response.statusCode}'),</span></span>
+<span id="L25"><span class="lineNum">      25</span>              :           ),</span>
+<span id="L26"><span class="lineNum">      26</span>              :         );</span>
+<span id="L27"><span class="lineNum">      27</span>              :       }</span>
+<span id="L28"><span class="lineNum">      28</span>              :     } catch (e) {</span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">           2 :       ScaffoldMessenger.of(context).showSnackBar(</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">           1 :         SnackBar(</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">           2 :           content: Text(key:const Key('api_controller_json_error'),'Errore durante la verifica del file JSON: $e'),</span></span>
+<span id="L32"><span class="lineNum">      32</span>              :         ),</span>
+<span id="L33"><span class="lineNum">      33</span>              :       );</span>
+<span id="L34"><span class="lineNum">      34</span>              :     }</span>
+<span id="L35"><span class="lineNum">      35</span>              :   }</span>
+<span id="L36"><span class="lineNum">      36</span>              : }</span>
         </pre>
               </td>
             </tr>

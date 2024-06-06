@@ -263,7 +263,7 @@ class _ListRecipesState extends State<ListRecipes> {
   }
 
   Widget _buildDialogContainer(BuildContext context, dynamic recipeData) {
-    return RecipeDetailsPage(recipeData: recipeData);
+    return RecipeDetailsPage(recipeData: recipeData, isTesting: widget.test);
   }
 
   Widget _buildRecipeDetail(String label, String value) {
